@@ -1,0 +1,32 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/quentin/.emacs.d/" . "auto-save-list/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/quentin/.emacs.d/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "init.el"
+ "ido.last"
+ "readme.org"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/quentin/.emacs.d/" (23636 48952 211935 405000) "init.el" "recentf" "../" "settings.el" "key" "settings.org~" "auto-save-list/" "elpa/" "init.el~" "#ac-comphist.dat#" "key.pub" "ido.last" "ido.last~" "settings.org" "ac-comphist.dat" "README.md" "./" ".gitignore")
+
+ ("/home/quentin/" (23636 47763 668745 592000) "Downloads/" ".factorio/" "modelio/" ".directory" "Videos/" "#foo#" "Pictures/" "vsls-reqs" ".wine/" ".oracle_jre_usage/" ".Xauthority" ".pylint.d/" ".dbus/" ".local/" "cachedir/" ".steampath" "projects/" ".vscode/" ".pia_manager/" ".gconf/" "Qt/" "TUTORIAL" "../" ".nano/" "SubEdit/" ".presage/" ".git/" "Nextcloud/" ".wget-hsts" ".profile" ".mlterm/" ".gtkrc-2.0" ".face" ".java/" ".gnome/" ".bash_history" ".kde/" ".recently-used" ".gitkraken/" "org/" ".mplayer/" "my_init.org" ".bashrc" ".swt/" "#TUTORIAL#" ".config/" ".aegisub/" ".gitconfig" ".emacs~" ".steam/" "cquery/" ".xinputrc" "Music/" ".face.icon" ".xsession-errors" ".modelio/" "dev/" ".mozilla/" "Steam/" ".steampid" ".mono/" "Desktop/" ".com.privateinternetaccess.vpn/" ".emacs.d/" ".conan/" ".gnupg/" ".doom.d/" ".ssh/" ".gtk-bookmarks" ".pki/" "Documents/" ".subversion/" "quentin/" ".audacity-data/" ".bash_logout" ".cache/" ".fonts.conf" ".android/" "README.md" "./" "Public/" "qtcreator/" ".jubler/" "pia.sh" "Templates/")
+
+ ("/home/quentin/dev/cours/" (23635 1453 155203 583000) ".#fr.org" "../" ".git/" "fr.org~" "test.cpp" "#fr.org#" "Physique/" "fr.org" "fr.tex" "Info/" "./" ".gitignore")
+
+ ("/home/quentin/.emacs.d/auto-save-list/" (23632 29515 875488 435000) "../" "./" ".saves-13652-debian~")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
