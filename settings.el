@@ -1,20 +1,21 @@
-(setq inhibit-startup-message t)
-  (tool-bar-mode -1)
-;;(fset yes-or-no-p 'y-or-n-p)
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (set-face-attribute 'default nil :height 150)
+(set-register ?e(cons 'file "~/.emacs.d/settings.org"))
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/"))
 
-  (require 'package)
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives
-	       '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
 
-  (package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
+(set-window-scroll-bars (minibuffer-window) 0 'none)
+	  (setq inhibit-startup-message t)
 
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+	  (tool-bar-mode -1)
+	  (global-set-key (kbd "<f5>") 'revert-buffer)
+	  (set-face-attribute 'default nil :height 150)
 
 (use-package which-key
   :ensure t
@@ -59,8 +60,8 @@
 
 (use-package swiper
   :ensure try
-  :bind (("C-s" . swiper)
-	 ("C-r" . swiper)
+  :bind (("C-f" . swiper)
+	 ("C-F" . swiper)
 	 ("C-c C-r" . ivy-resume)
 	 ("M-x" . counsel-M-x)
 	 ("C-x C-f" . counsel-find-file))
@@ -71,7 +72,6 @@
     (setq ivy-display-style 'fancy)
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
-
 (use-package avy
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
@@ -95,6 +95,34 @@
 (use-package magit
   :ensure t
   :init
-  (progn
-  (bind-key "C-x g" 'magit-status)
-  ))
+  (bind-key "C-x g" 'magit-status))
+
+(setq c-default-style "bsd"
+      c-basic-offset 3)
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode t))
+
+(use-package ggtags
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook
+	    (lambda ()
+	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+		(ggtags-mode 1))))
+)
+
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1))
+
+(yas-reload-all)
+
+(use-package projectile
+  :ensure 
+  :config
+  (projectile-global-mode)
+  (setq projectile-completion-system 'ivy))

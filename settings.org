@@ -1,44 +1,44 @@
-* Emacs settings and melpa
-
+* melpa
 #+BEGIN_SRC emacs-lisp
-  (setq inhibit-startup-message t)
-  (tool-bar-mode -1)
-;;(fset yes-or-no-p 'y-or-n-p)
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (set-face-attribute 'default nil :height 150)
+    (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
+    (require 'package)
+    (setq package-enable-at-startup nil)
+    (add-to-list 'package-archives
+		 '("melpa" . "https://melpa.org/packages/"))
 
-  (require 'package)
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives
-	       '("melpa" . "https://melpa.org/packages/"))
+    (package-initialize)
 
-  (package-initialize)
-
-
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
 #+END_SRC
-
+* emacs settings
+  #+BEGIN_SRC emacs-lisp
+      (set-window-scroll-bars (minibuffer-window) 0 'none)
+		(setq inhibit-startup-message t)
+    
+		(tool-bar-mode -1)
+		(global-set-key (kbd "<f5>") 'revert-buffer)
+		(set-face-attribute 'default nil :height 150)
+  
+  #+END_SRC
+* keybindings
+  #+BEGIN_SRC emacs-lisp
+    (bind-key "C-z" 'undo)  
+  #+END_SRC
 * try
-
-#+BEGIN_SRC 
-(use-package try
-  :ensure t)
+#+BEGIN_SRC emacs-lisp 
+  (use-package try
+    :ensure t)
 #+END_SRC
-
 * which-key
-
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :ensure t
   :config (which-key-mode))
 #+END_SRC
-
 * org_mode
-
 #+BEGIN_SRC emacs-lisp 
-
 (use-package org-bullets
   :ensure t
   :init
@@ -83,13 +83,11 @@
 #+END_SRC
 
 * search
-
 #+BEGIN_SRC emacs-lisp
-
 (use-package swiper
   :ensure try
-  :bind (("C-s" . swiper)
-	 ("C-r" . swiper)
+  :bind (("C-f" . swiper)
+	 ("C-F" . swiper)
 	 ("C-c C-r" . ivy-resume)
 	 ("M-x" . counsel-M-x)
 	 ("C-x C-f" . counsel-find-file))
@@ -100,17 +98,12 @@
     (setq ivy-display-style 'fancy)
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
-
 (use-package avy
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
-
 #+END_SRC
-
 * auto completion
-
 #+BEGIN_SRC emacs-lisp
-
 (use-package auto-complete
   :ensure t
   :init
@@ -119,29 +112,63 @@
     (global-auto-complete-mode t)
     (add-to-list 'ac-modes 'org-mode)
     ))
-    
 #+END_SRC
-
 * theme
-
 #+BEGIN_SRC emacs-lisp
+  (use-package atom-one-dark-theme
+    :ensure t)
+  (load-theme 'atom-one-dark t)
 
-(use-package atom-one-dark-theme
-  :ensure t)
-(load-theme 'atom-one-dark t)
-
-(use-package color-theme
-  :ensure t)
-
+  (use-package color-theme
+    :ensure t)
 #+END_SRC
-
 * magit
   #+BEGIN_SRC emacs-lisp
-
     (use-package magit
       :ensure t
       :init
-      (progn
-      (bind-key "C-x g" 'magit-status)
-      ))
+      (bind-key "C-x g" 'magit-status))
   #+END_SRC
+* c++
+  #+BEGIN_SRC emacs-lisp
+    (setq c-default-style "bsd"
+	  c-basic-offset 3)
+  #+END_SRC
+* flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :init
+      (global-flycheck-mode t))
+  #+END_SRC
+* tags
+  #+BEGIN_SRC emacs-lisp
+    (use-package ggtags
+      :ensure t
+      :config
+      (add-hook 'c-mode-common-hook
+		(lambda ()
+		  (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+		    (ggtags-mode 1))))
+    )
+  #+END_SRC
+
+* yasnippets
+  #+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :init
+      (yas-global-mode 1))
+      
+    (yas-reload-all)
+  #+END_SRC
+  
+* projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure 
+      :config
+      (projectile-global-mode)
+      (setq projectile-completion-system 'ivy))  
+  #+END_SRC
+  
