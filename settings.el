@@ -17,6 +17,9 @@
 	  (global-set-key (kbd "<f5>") 'revert-buffer)
 	  (set-face-attribute 'default nil :height 150)
 
+(use-package try
+  :ensure t)
+
 (use-package which-key
   :ensure t
   :config (which-key-mode))
@@ -126,3 +129,42 @@
   :config
   (projectile-global-mode)
   (setq projectile-completion-system 'ivy))
+
+(keyboard-translate ?\C-d ?\C-x)
+
+(defvar my-keys-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-z") 'undo)
+
+    ;;navigation by one
+    (define-key map (kbd "C-i") 'previous-line)
+    (define-key map (kbd "C-k") 'next-line)
+    (define-key map (kbd "C-j") 'backward-char)
+    (define-key map (kbd "C-l") 'forward-char)
+
+    ;;navigation by one element
+    (define-key map (kbd "M-i") 'backward-sentence)
+    (define-key map (kbd "M-k") 'forward-sentence)
+    (define-key map (kbd "M-j") 'backward-word)
+    (define-key map (kbd "M-l") 'forward-word)
+
+    ;;move end of *
+    (define-key map (kbd "C-u") 'move-beginning-of-line)
+    (define-key map (kbd "C-o") 'move-end-of-line)
+    (define-key map (kbd "M-u") 'beginning-of-buffer)
+    (define-key map (kbd "M-o") 'end-of-buffer)
+
+    ;;deleting stuff
+    (define-key map (kbd "M-<DEL>") 'kill-line)
+
+    ;;main keys
+    (define-key map (kbd "`") 'execute-extended-command)
+      map)
+    "my-keys-minor-mode keymap.")
+
+(define-minor-mode my-keys-minor-mode
+    "A minor mode that overrides default keys of major modes."
+    :init-value t
+    :lighter " my-keys")
+
+    (my-keys-minor-mode 1)
