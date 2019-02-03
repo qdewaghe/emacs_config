@@ -10,15 +10,55 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(global-linum-mode t)
 (set-window-scroll-bars (minibuffer-window) 0 'none)
-	  (setq inhibit-startup-message t)
+(setq inhibit-startup-message t)
 
-	  (tool-bar-mode -1)
-	  (global-set-key (kbd "<f5>") 'revert-buffer)
-	  (set-face-attribute 'default nil :height 150)
+(tool-bar-mode -1)
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(set-face-attribute 'default nil :height 150)
 
 
-	  (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+
+(use-package cquery
+  :ensure t
+  :init
+  (setq cquery-executable "c:/cquery/build/Release/cquery.exe")
+  :config
+  (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
+
+(use-package lsp-mode
+  :commands lsp )
+
+(defun cquery//enable ()
+  (condition-case nil
+      (lsp)
+    (user-error nil)))
+
+(use-package cquery
+  :commands lsp
+  :init (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable))
+
+(use-package lsp-ui
+  :ensure t
+  :init
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1)
+  (global-company-mode t))
+
+(use-package company-lsp
+  :ensure t
+  :init
+  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+  :config
+  (push 'company-lsp company-backends))
 
 (use-package try
   :ensure t)
@@ -82,15 +122,6 @@
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
 
-(use-package auto-complete
-  :ensure t
-  :init
-  (progn
-    (ac-config-default)
-    (global-auto-complete-mode t)
-    (add-to-list 'ac-modes 'org-mode)
-    ))
-
 (use-package atom-one-dark-theme
   :ensure t)
 (load-theme 'atom-one-dark t)
@@ -105,11 +136,6 @@
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
-
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode t))
 
 (use-package ggtags
   :ensure t
