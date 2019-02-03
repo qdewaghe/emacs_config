@@ -19,6 +19,12 @@
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("c:/Users/Quentin/AppData/Roaming/.emacs.d/" (23639 1878 0 0) "snippets/" "settings.org" "settings.el" "recentf" "README.md" "projectile.cache" "projectile-bookmarks.eld" "init.el" "ido.last~" "ido.last" "elpa/" "auto-save-list/" "ac-comphist.dat" ".gitignore" ".git/" ".#settings.org" "../" "./")
+
+ ("c:/dev/cpp/" (23610 21658 0 0) "vcpkg/" "TCP_Client/" "SRT-Creator/" "Hazel/" "cpp_starter_project/" "build-SRT_Creator-Desktop_Qt_5_11_0_MSVC2017_64bit-Debug/" ".vs/" "../" "./")
+
+ ("c:/dev/cpp/cpp_starter_project/" (23638 44259 0 0) "vendor/" "tests/" "src/" "README.md" "premake5.lua" "LICENSE" "include/" "cpp_starter_project.sln" "build/" ".vscode/" ".vs/" ".gitlab-ci.yml" ".gitignore" ".git/" "../" "./")
+
  ("/home/quentin/" (23637 50254 260003 946000) "Downloads/" ".factorio/" "modelio/" ".directory" "Videos/" "#foo#" "Pictures/" "vsls-reqs" ".wine/" ".oracle_jre_usage/" ".Xauthority" ".pylint.d/" ".dbus/" ".local/" "cachedir/" ".steampath" "projects/" ".vscode/" ".pia_manager/" ".gconf/" "Qt/" "TUTORIAL" "../" ".nano/" "SubEdit/" ".presage/" ".git/" "Nextcloud/" ".wget-hsts" ".profile" ".mlterm/" ".gtkrc-2.0" ".face" ".java/" ".gnome/" ".bash_history" ".kde/" ".recently-used" ".gitkraken/" "org/" ".mplayer/" "my_init.org" ".bashrc" ".swt/" "#TUTORIAL#" ".config/" ".aegisub/" ".gitconfig" ".emacs~" ".steam/" "cquery/" ".xinputrc" "Music/" ".face.icon" ".xsession-errors" ".modelio/" "dev/" ".mozilla/" "Steam/" ".steampid" ".mono/" "Desktop/" ".com.privateinternetaccess.vpn/" ".emacs.d/" ".conan/" ".gnupg/" ".doom.d/" ".ssh/" ".gtk-bookmarks" ".pki/" "Documents/" ".subversion/" "quentin/" ".audacity-data/" ".bash_logout" ".cache/" ".fonts.conf" ".android/" "README.md" "./" "Public/" "qtcreator/" ".jubler/" "pia.sh" "Templates/")
 
  ("/home/quentin/.emacs.d/" (23637 63493 313558 936000) "init.el" "recentf" "../" ".git/" "snippets/" "projectile-bookmarks.eld" "#settings.org_archive#" "settings.el" ".#settings.org_archive" "key" "settings.org~" "auto-save-list/" "recentf~" "elpa/" "init.el~" "#ac-comphist.dat#" "key.pub" "ido.last" "ido.last~" "settings.org" "ac-comphist.dat" "README.md" "./" ".gitignore")

@@ -1,0 +1,1 @@
+("c:/dev/cpp/cpp_starter_project/" "~/.emacs.d/")

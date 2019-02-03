@@ -17,6 +17,9 @@
 	  (global-set-key (kbd "<f5>") 'revert-buffer)
 	  (set-face-attribute 'default nil :height 150)
 
+
+	  (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+
 (use-package try
   :ensure t)
 
@@ -125,25 +128,26 @@
 (yas-reload-all)
 
 (use-package projectile
-  :ensure 
-  :config
-  (projectile-global-mode)
-  (setq projectile-completion-system 'ivy))
+:ensure t
+:config
+(projectile-global-mode)
+(setq projectile-completion-system 'ivy))
 
-(keyboard-translate ?\C-d ?\C-x)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-z") 'undo)
 
     ;;navigation by one
-    (define-key map (kbd "C-i") 'previous-line)
+    (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+    (define-key map (kbd "H-i") 'previous-line)
     (define-key map (kbd "C-k") 'next-line)
     (define-key map (kbd "C-j") 'backward-char)
     (define-key map (kbd "C-l") 'forward-char)
 
     ;;navigation by one element
-    (define-key map (kbd "M-i") 'backward-sentence)
+    (define-key map (kbd "M-i") 'backward-sentence)	
     (define-key map (kbd "M-k") 'forward-sentence)
     (define-key map (kbd "M-j") 'backward-word)
     (define-key map (kbd "M-l") 'forward-word)
@@ -162,7 +166,7 @@
       map)
     "my-keys-minor-mode keymap.")
 
-(define-minor-mode my-keys-minor-mode
+    (define-minor-mode my-keys-minor-mode
     "A minor mode that overrides default keys of major modes."
     :init-value t
     :lighter " my-keys")
