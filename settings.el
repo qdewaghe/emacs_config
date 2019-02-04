@@ -16,11 +16,66 @@
 (setq inhibit-startup-message t)
 
 (tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(line-number-mode 1)
+(column-number-mode 1)
+
+(setq scroll-conservatively 100)
+(setq ring-bell-function 'ignore)
+(global-subword-mode 1)
+
+(global-hl-line-mode t)
+
 (global-set-key (kbd "<f5>") 'revert-buffer)
 (set-face-attribute 'default nil :height 150)
 
+(defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+(defvar my-term-shell "/bin/bash")
+
+(global-set-key (kbd "<s-return>") 'shell)
+
+(setq electric-pair-pairs
+      '(
+	(?\" . ?\")
+	(?\{ . ?\})))
+
+(electric-pair-mode)
+
+(use-package try
+  :ensure t)
+
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+
+(setq org-src-window-setup 'current-window)
+
+(use-package org-bullets
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook (lambda ()
+			     (org-bullets-mode 1))))
+
+(use-package beacon
+  :ensure t
+  :init
+  (beacon-mode 1))
+
+(use-package atom-one-dark-theme
+  :ensure t)
+(load-theme 'atom-one-dark t)
+
+(use-package color-theme
+  :ensure t)
+
+(use-package projectile
+  :ensure t
+  :bind ("C-c p" . projectile-command-map)
+  :config
+  (projectile-mode)
+  (setq projectile-completion-system 'ivy))
 
 (use-package cquery
   :ensure t
@@ -51,7 +106,7 @@
   :ensure t
   :config
   (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 1)
+  (setq company-minimum-prefix-length 3)
   (global-company-mode t))
 
 (use-package company-lsp
@@ -60,19 +115,6 @@
   (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
   :config
   (push 'company-lsp company-backends))
-
-(use-package try
-  :ensure t)
-
-(use-package which-key
-  :ensure t
-  :config (which-key-mode))
-
-(use-package org-bullets
-  :ensure t
-  :init
-  (add-hook 'org-mode-hook (lambda ()
-			   (org-bullets-mode 1))))
 
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -106,7 +148,7 @@
   (setq ivy-display-style 'fancy))
 
 (use-package swiper
-  :ensure try
+:ensure try
   :bind (("C-f" . swiper)
 	 ("C-F" . swiper)
 	 ("C-c C-r" . ivy-resume)
@@ -123,17 +165,16 @@
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
 
-(use-package atom-one-dark-theme
-  :ensure t)
-(load-theme 'atom-one-dark t)
-
-(use-package color-theme
-  :ensure t)
-
 (use-package magit
   :ensure t
   :init
   (bind-key "C-x g" 'magit-status))
+
+(defun kill-whole-word()
+  (interactive)
+  (backward-word)
+  (kill-word 1))
+(global-set-key (kbd "C-c w w") 'kill-whole-word)
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
@@ -147,6 +188,11 @@
 		(ggtags-mode 1))))
 )
 
+(use-package rainbow-delimiters
+  :ensure t
+  :config 
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
 (use-package yasnippet
   :ensure t
   :init
@@ -154,15 +200,10 @@
 
 (yas-reload-all)
 
-(use-package projectile
-  :ensure t
-  :bind ("C-c p" . projectile-command-map)
-  :config
-  (setq projectile-completion-system 'ivy))
-
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-z") 'undo)
+    (define-key map (kbd "C-s") 'save-buffer)
 
     ;;navigation by one
     (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
@@ -197,3 +238,26 @@
     :lighter " my-keys")
 
     (my-keys-minor-mode 1)
+
+(use-package hungry-delete
+  :ensure t
+  :config
+  (global-hungry-delete-mode))
+
+(use-package dashboard
+  :preface
+  (defun my/dashboard-banner ()
+    "Set a dashboard banner including information on package initialization
+  time and garbage collections."""
+    (setq dashboard-banner-logo-title
+	  (format "Emacs ready in %.2f seconds with %d garbage collections."
+		  (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+  :config
+  (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+  (setq dashboard-items '((projects . 5)
+			  (recents . 5)
+			  (agenda . 5)
+			  ))
+  (dashboard-setup-startup-hook)
+  :hook ((after-init     . dashboard-refresh-buffer)
+	 (dashboard-mode . my/dashboard-banner)))

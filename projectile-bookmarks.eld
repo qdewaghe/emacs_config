@@ -1,1 +1,1 @@
-("~/.emacs.d/" "~/dev/notes/")
+("~/.emacs.d/" "~/dev/cpp_starter_project/" "~/dev/notes/")

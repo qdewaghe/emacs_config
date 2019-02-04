@@ -1,4 +1,4 @@
-* melpa
+* repositories
 #+BEGIN_SRC emacs-lisp
     (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
     (require 'package)
@@ -24,9 +24,12 @@
    (tool-bar-mode -1)
    (menu-bar-mode -1)
    (scroll-bar-mode -1)
+   (line-number-mode 1)
+   (column-number-mode 1)
 
    (setq scroll-conservatively 100)
    (setq ring-bell-function 'ignore)
+   (global-subword-mode 1)
 
    (global-hl-line-mode t)
 
@@ -38,17 +41,75 @@
    (defvar my-term-shell "/bin/bash")
 
    (global-set-key (kbd "<s-return>") 'shell)
-
-   ;;(setq local-function-key-map 
-   ;;(delq '(kp-tab . [9]) local-function-key-map))
-
+   
   #+END_SRC
  
+* electric
+  #+BEGIN_SRC emacs-lisp
+    (setq electric-pair-pairs
+	  '(
+	    (?\" . ?\")
+	    (?\{ . ?\})))
+
+    (electric-pair-mode)
+			   
+  #+END_SRC
 * try
-#+BEGIN_SRC emacs-lisp 
+  #+BEGIN_SRC emacs-lisp 
+  
   (use-package try
     :ensure t)
+
+  #+END_SRC
+* which-key
+#+BEGIN_SRC emacs-lisp
+
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+
 #+END_SRC
+* org_mode
+#+BEGIN_SRC emacs-lisp 
+  
+  (setq org-src-window-setup 'current-window)
+
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda ()
+			       (org-bullets-mode 1))))
+
+#+END_SRC
+* beacon
+  #+BEGIN_SRC emacs-lisp
+
+    (use-package beacon
+      :ensure t
+      :init
+      (beacon-mode 1))
+
+  #+END_SRC
+* theme
+#+BEGIN_SRC emacs-lisp
+  (use-package atom-one-dark-theme
+    :ensure t)
+  (load-theme 'atom-one-dark t)
+
+  (use-package color-theme
+    :ensure t)
+#+END_SRC
+  
+* projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :bind ("C-c p" . projectile-command-map)
+      :config
+      (projectile-mode)
+      (setq projectile-completion-system 'ivy))      
+
+  #+END_SRC
 
 * cquery lsp company
  
@@ -82,7 +143,7 @@
       :ensure t
       :config
       (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 1)
+      (setq company-minimum-prefix-length 3)
       (global-company-mode t))
 
     (use-package company-lsp
@@ -93,20 +154,6 @@
       (push 'company-lsp company-backends))
 
   #+END_SRC
-* which-key
-#+BEGIN_SRC emacs-lisp
-(use-package which-key
-  :ensure t
-  :config (which-key-mode))
-#+END_SRC
-* org_mode
-#+BEGIN_SRC emacs-lisp 
-(use-package org-bullets
-  :ensure t
-  :init
-  (add-hook 'org-mode-hook (lambda ()
-			   (org-bullets-mode 1))))
-#+END_SRC
 * ace counsel ivy
 
 #+BEGIN_SRC emacs-lisp
@@ -147,7 +194,7 @@
 * search
 #+BEGIN_SRC emacs-lisp
 (use-package swiper
-  :ensure try
+:ensure try
   :bind (("C-f" . swiper)
 	 ("C-F" . swiper)
 	 ("C-c C-r" . ivy-resume)
@@ -164,23 +211,6 @@
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
 #+END_SRC
-* beacon
-  #+BEGIN_SRC emacs-lisp
-    (use-package beacon
-      :ensure t
-      :init
-      (beacon-mode 1))Q
-
-  #+END_SRC
-* theme
-#+BEGIN_SRC emacs-lisp
-  (use-package atom-one-dark-theme
-    :ensure t)
-  (load-theme 'atom-one-dark t)
-
-  (use-package color-theme
-    :ensure t)
-#+END_SRC
 * magit
   #+BEGIN_SRC emacs-lisp
     (use-package magit
@@ -188,6 +218,14 @@
       :init
       (bind-key "C-x g" 'magit-status))
   #+END_SRC
+* function
+  #+BEGIN_SRC emacs-lisp
+    (defun kill-whole-word()
+      (interactive)
+      (backward-word)
+      (kill-word 1))
+    (global-set-key (kbd "C-c w w") 'kill-whole-word)
+    #+END_SRC
 * c++
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
@@ -204,7 +242,14 @@
 		    (ggtags-mode 1))))
     )
   #+END_SRC
-
+* rainbow
+  #+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :config 
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  
+  #+END_SRC
 * yasnippets
   #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
@@ -214,17 +259,7 @@
       
     (yas-reload-all)
   #+END_SRC
-  
-* projectile
-  #+BEGIN_SRC emacs-lisp
-    (use-package projectile
-      :ensure t
-      :bind ("C-c p" . projectile-command-map)
-      :config
-      (projectile-mode)
-      (setq projectile-completion-system 'ivy))      
 
-  #+END_SRC
 * keybindings
 
   #+BEGIN_SRC emacs-lisp
@@ -232,6 +267,7 @@
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
+	(define-key map (kbd "C-s") 'save-buffer)
 
 	;;navigation by one
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
@@ -268,6 +304,33 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
-  
+* hungry delete
+  #+BEGIN_SRC emacs-lisp
+    
+    (use-package hungry-delete
+      :ensure t
+      :config
+      (global-hungry-delete-mode))
 
+  #+END_SRC
+* dashboard
+  #+BEGIN_SRC emacs-lisp
+    (use-package dashboard
+      :preface
+      (defun my/dashboard-banner ()
+	"Set a dashboard banner including information on package initialization
+      time and garbage collections."""
+	(setq dashboard-banner-logo-title
+	      (format "Emacs ready in %.2f seconds with %d garbage collections. "
+		      (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+      :config
+      (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+      (setq dashboard-items '((projects . 5)
+			      (recents . 5)
+			      (agenda . 5)
+			      ))
+      (dashboard-setup-startup-hook)
+      :hook ((after-init     . dashboard-refresh-buffer)
+	     (dashboard-mode . my/dashboard-banner)))
 
+  #+END_SRC
