@@ -17,6 +17,7 @@
  
  #+BEGIN_SRC emacs-lisp
 
+   (delete-selection-mode)
    (global-linum-mode t)
    (set-window-scroll-bars (minibuffer-window) 0 'none)
    (setq inhibit-startup-message t)
@@ -41,7 +42,7 @@
    (defvar my-term-shell "/bin/bash")
 
    (global-set-key (kbd "<s-return>") 'shell)
-   
+
   #+END_SRC
  
 * time
