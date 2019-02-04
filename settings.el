@@ -1,8 +1,9 @@
 (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
 (require 'package)
 (setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/"))
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+         ("marmalade" . "http://marmalade-repo.org/packages/")
+         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
@@ -10,12 +11,55 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(global-linum-mode t)
 (set-window-scroll-bars (minibuffer-window) 0 'none)
-	  (setq inhibit-startup-message t)
+(setq inhibit-startup-message t)
 
-	  (tool-bar-mode -1)
-	  (global-set-key (kbd "<f5>") 'revert-buffer)
-	  (set-face-attribute 'default nil :height 150)
+(tool-bar-mode -1)
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(set-face-attribute 'default nil :height 150)
+
+
+(setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+
+(use-package cquery
+  :ensure t
+  :init
+  (setq cquery-executable "~/.emacs.d/cquery/build/release/cquery")
+  :config
+  (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
+
+(use-package lsp-mode
+  :commands lsp )
+
+(defun cquery//enable ()
+  (condition-case nil
+      (lsp)
+    (user-error nil)))
+
+(use-package cquery
+  :commands lsp
+  :init (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable))
+
+(use-package lsp-ui
+  :ensure t
+  :init
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1)
+  (global-company-mode t))
+
+(use-package company-lsp
+  :ensure t
+  :init
+  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+  :config
+  (push 'company-lsp company-backends))
 
 (use-package try
   :ensure t)
@@ -79,15 +123,6 @@
   :ensure t
   :bind ("M-s" . avy-goto-word-1))
 
-(use-package auto-complete
-  :ensure t
-  :init
-  (progn
-    (ac-config-default)
-    (global-auto-complete-mode t)
-    (add-to-list 'ac-modes 'org-mode)
-    ))
-
 (use-package atom-one-dark-theme
   :ensure t)
 (load-theme 'atom-one-dark t)
@@ -102,11 +137,6 @@
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
-
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode t))
 
 (use-package ggtags
   :ensure t
@@ -125,25 +155,24 @@
 (yas-reload-all)
 
 (use-package projectile
-  :ensure 
+  :ensure t
+  :bind ("C-c p" . projectile-command-map)
   :config
-  (projectile-global-mode)
   (setq projectile-completion-system 'ivy))
-
-(keyboard-translate ?\C-d ?\C-x)
 
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-z") 'undo)
 
     ;;navigation by one
-    (define-key map (kbd "C-i") 'previous-line)
+    (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+    (define-key map (kbd "H-i") 'previous-line)
     (define-key map (kbd "C-k") 'next-line)
     (define-key map (kbd "C-j") 'backward-char)
     (define-key map (kbd "C-l") 'forward-char)
 
     ;;navigation by one element
-    (define-key map (kbd "M-i") 'backward-sentence)
+    (define-key map (kbd "M-i") 'backward-sentence)	
     (define-key map (kbd "M-k") 'forward-sentence)
     (define-key map (kbd "M-j") 'backward-word)
     (define-key map (kbd "M-l") 'forward-word)
@@ -162,7 +191,7 @@
       map)
     "my-keys-minor-mode keymap.")
 
-(define-minor-mode my-keys-minor-mode
+    (define-minor-mode my-keys-minor-mode
     "A minor mode that overrides default keys of major modes."
     :init-value t
     :lighter " my-keys")
