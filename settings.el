@@ -11,6 +11,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(delete-selection-mode)
 (global-linum-mode t)
 (set-window-scroll-bars (minibuffer-window) 0 'none)
 (setq inhibit-startup-message t)
@@ -94,45 +95,6 @@
   (projectile-mode)
   (setq projectile-completion-system 'ivy))
 
-(use-package cquery
-  :ensure t
-  :init
-  (setq cquery-executable "~/.emacs.d/cquery/build/release/cquery")
-  :config
-  (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
-
-(use-package lsp-mode
-  :commands lsp )
-
-(defun cquery//enable ()
-  (condition-case nil
-      (lsp)
-    (user-error nil)))
-
-(use-package cquery
-  :commands lsp
-  :init (add-hook 'c-mode-hook #'cquery//enable)
-  (add-hook 'c++-mode-hook #'cquery//enable))
-
-(use-package lsp-ui
-  :ensure t
-  :init
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
-  (global-company-mode t))
-
-(use-package company-lsp
-  :ensure t
-  :init
-  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-  :config
-  (push 'company-lsp company-backends))
-
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)
 (ido-mode 1)
@@ -192,6 +154,11 @@
   (backward-word)
   (kill-word 1))
 (global-set-key (kbd "C-c w w") 'kill-whole-word)
+
+(use-package flycheck
+  :ensure t
+  :init 
+  (add-hook 'c++-mode-hook #'flycheck-mode))
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
@@ -264,17 +231,60 @@
 (use-package dashboard
   :preface
   (defun my/dashboard-banner ()
-    "Set a dashboard banner including information on package initialization
+     "Set a dashboard banner including information on package initialization
   time and garbage collections."""
-    (setq dashboard-banner-logo-title
-	  (format "Emacs ready in %.2f seconds with %d garbage collections. "
-		  (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+     (setq dashboard-banner-logo-title
+	   (format "Emacs ready in %.2f seconds with %d garbage collections. "
+		   (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
   :config
   (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
   (setq dashboard-items '((projects . 5)
-			  (recents . 5)
-			  (agenda . 5)
-			  ))
+			   (recents . 5)
+			   (agenda . 5)
+			   ))
   (dashboard-setup-startup-hook)
   :hook ((after-init     . dashboard-refresh-buffer)
-	 (dashboard-mode . my/dashboard-banner)))
+	  (dashboard-mode . my/dashboard-banner)))
+
+(use-package cquery
+  :ensure t
+  :init
+  (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
+  :config
+  (add-hook 'c-mode-common-hook 'lsp))
+
+(use-package lsp-mode
+  :ensure t
+  :commands lsp)
+
+(defun cquery//enable ()
+(condition-case nil
+    (lsp)
+  (user-error nil)))
+
+(use-package cquery
+  :ensure t
+  :commands lsp
+  :init (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :init
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (global-company-mode t))
+
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp
+  :init
+  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+  :config
+  (push 'company-lsp company-backends))

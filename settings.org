@@ -132,50 +132,6 @@
       (setq projectile-completion-system 'ivy))      
 
   #+END_SRC
-
-* cquery lsp company
- 
-  #+BEGIN_SRC emacs-lisp
-    (use-package cquery
-      :ensure t
-      :init
-      (setq cquery-executable "~/.emacs.d/cquery/build/release/cquery")
-      :config
-      (add-hook 'c-mode-common-hook 'lsp-cquery-enable))
-
-    (use-package lsp-mode
-      :commands lsp )
-
-    (defun cquery//enable ()
-      (condition-case nil
-	  (lsp)
-	(user-error nil)))
-
-    (use-package cquery
-      :commands lsp
-      :init (add-hook 'c-mode-hook #'cquery//enable)
-      (add-hook 'c++-mode-hook #'cquery//enable))
-
-    (use-package lsp-ui
-      :ensure t
-      :init
-      (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-    (use-package company
-      :ensure t
-      :config
-      (setq company-idle-delay 0)
-      (setq company-minimum-prefix-length 3)
-      (global-company-mode t))
-
-    (use-package company-lsp
-      :ensure t
-      :init
-      (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-      :config
-      (push 'company-lsp company-backends))
-
-  #+END_SRC
 * ace counsel ivy
 
 #+BEGIN_SRC emacs-lisp
@@ -248,6 +204,13 @@
       (kill-word 1))
     (global-set-key (kbd "C-c w w") 'kill-whole-word)
     #+END_SRC
+* flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :init 
+      (add-hook 'c++-mode-hook #'flycheck-mode))
+  #+END_SRC
 * c++
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
@@ -337,22 +300,70 @@
   #+END_SRC
 * dashboard
   #+BEGIN_SRC emacs-lisp
-    (use-package dashboard
-      :preface
-      (defun my/dashboard-banner ()
-	"Set a dashboard banner including information on package initialization
-      time and garbage collections."""
-	(setq dashboard-banner-logo-title
-	      (format "Emacs ready in %.2f seconds with %d garbage collections. "
-		      (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+       (use-package dashboard
+	 :preface
+	 (defun my/dashboard-banner ()
+	    "Set a dashboard banner including information on package initialization
+	 time and garbage collections."""
+	    (setq dashboard-banner-logo-title
+		  (format "Emacs ready in %.2f seconds with %d garbage collections. "
+			  (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+	 :config
+	 (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+	 (setq dashboard-items '((projects . 5)
+				  (recents . 5)
+				  (agenda . 5)
+				  ))
+	 (dashboard-setup-startup-hook)
+	 :hook ((after-init     . dashboard-refresh-buffer)
+		 (dashboard-mode . my/dashboard-banner)))
+  #+END_SRC
+* company
+ 
+  #+BEGIN_SRC emacs-lisp
+
+    (use-package cquery
+      :ensure t
+      :init
+      (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
       :config
-      (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
-      (setq dashboard-items '((projects . 5)
-			      (recents . 5)
-			      (agenda . 5)
-			      ))
-      (dashboard-setup-startup-hook)
-      :hook ((after-init     . dashboard-refresh-buffer)
-	     (dashboard-mode . my/dashboard-banner)))
+      (add-hook 'c-mode-common-hook 'lsp))
+
+    (use-package lsp-mode
+      :ensure t
+      :commands lsp)
+
+    (defun cquery//enable ()
+    (condition-case nil
+	(lsp)
+      (user-error nil)))
+
+    (use-package cquery
+      :ensure t
+      :commands lsp
+      :init (add-hook 'c-mode-hook #'cquery//enable)
+      (add-hook 'c++-mode-hook #'cquery//enable))
+
+    (use-package lsp-ui
+      :ensure t
+      :commands lsp-ui-mode
+      :init
+      (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+    (use-package company
+      :ensure t
+      :config
+      (setq company-idle-delay 0)
+      (setq company-minimum-prefix-length 3)
+      (global-company-mode t))
+
+    (use-package company-lsp
+      :ensure t
+      :commands company-lsp
+      :init
+      (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+      :config
+      (push 'company-lsp company-backends))
+
 
   #+END_SRC
