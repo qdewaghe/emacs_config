@@ -176,19 +176,6 @@
 (ido-mode 1)
 
 (defalias 'list-buffers 'ibuffer)
-
-
-(use-package ace-window
-  :ensure t
-  :init
-  (progn
-    (global-set-key [remap other-window] 'ace-window)
-    (custom-set-faces
-     '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-    ))
-
-
 (use-package counsel
   :ensure t
   )
@@ -224,21 +211,25 @@
 (defun config-reload()
   (interactive)
   (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
-(global-set-key (kbd "C-c r") 'config-reload)
+(global-set-key (kbd "<F5>") 'config-reload)
 
 (defun split-and-follow-horizontally ()
   (interactive)
   (split-window-below)
   (balance-windows)
   (other-window 1))
+  ;;two versions so it works anyway if I press 2 too fast
 (global-set-key (kbd "C-c 2") 'split-and-follow-horizontally)
+(global-set-key (kbd "C-c C-2") 'split-and-follow-horizontally)
 
 (defun split-and-follow-vertically ()
     (interactive)
     (split-window-right)
     (balance-windows)
     (other-window 1))
+    ;;two versions so it works anyway if I press 3 too fast
 (global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
+(global-set-key (kbd "C-c C-3") 'split-and-follow-vertically)
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
@@ -303,12 +294,17 @@
     ;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
     (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
 
-    ;;window
+    ;;window with two versions so it works even if I press the number too fast
     (define-key map (kbd "C-c 1") 'delete-other-windows)
+    (define-key map (kbd "C-c C-1") 'delete-other-windows)
     (define-key map (kbd "C-c 0") 'delete-window)
+    (define-key map (kbd "C-c C-0") 'delete-window)
+    (define-key map (kbd "C-c o") 'switch-window)
+
+    ;;mark
+    (define-key map (kbd "<C-tab>") 'set-mark-command)
 
     ;;navigation by one
-
     (define-key map (kbd "H-i") 'previous-line)
     (define-key map (kbd "C-k") 'next-line)
     (define-key map (kbd "C-j") 'backward-char)
