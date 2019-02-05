@@ -91,10 +91,10 @@
   :config
   (global-hungry-delete-mode))
 
-(use-package flycheck
-  :ensure t
-  :init 
-  (add-hook 'c++-mode-hook #'flycheck-mode))
+;;(use-package flycheck
+;;  :ensure t
+;;  :init 
+;;  (add-hook 'c++-mode-hook #'flycheck-mode))
 
 (use-package dashboard
   :preface
@@ -179,18 +179,22 @@
 
 (use-package cquery
   :ensure t
-  :commands lsp
   :init
   (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
-  (add-hook 'c-mode-hook #'cquery//enable)
-  (add-hook 'c++-mode-hook #'cquery//enable))
   :config
-  (add-hook 'c-mode-common-hook 'lsp)
+  (add-hook 'c-mode-common-hook 'lsp))
 
 (defun cquery//enable ()
   (condition-case nil
       (lsp)
     (user-error nil)))
+
+;; I only managed to make cquery work by putting it twice
+(use-package cquery
+  :ensure t
+  :commands lsp
+  :init (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable))
 
 (use-package lsp-mode
   :ensure t
