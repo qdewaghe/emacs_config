@@ -1,4 +1,4 @@
-c* repositories
+* repositories
 #+BEGIN_SRC emacs-lisp
     (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
     (require 'package)
