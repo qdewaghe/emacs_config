@@ -126,65 +126,66 @@
 
   #+END_SRC
 *** search
-#+EGIN_SRC emacs-lisp
-(ue-package swiper
-:esure try
-  bind (("C-f" . swiper)
-  	 ("C-F" . swiper)
-  	 ("C-c C-r" . ivy-resume)
-  	 ("M-x" . counsel-M-x)
-  	 ("C-x C-f" . counsel-find-file))
-  config
-  progn
-   (ivy-mode 1)
-   (setq ivy-use-virtual-buffers t)
-   (setq ivy-display-style 'fancy)
-   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-   ))
-(ue-package avy
-  ensure t
-  bind ("M-f" . avy-goto-word-1))
-#+ND_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+  :ensure try
+    :bind (("C-f" . swiper)
+	   ("C-F" . swiper)
+	   ("C-c C-r" . ivy-resume)
+	   ("M-x" . counsel-M-x)
+	   ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+  (use-package avy
+    :ensure t
+    :bind ("M-f" . avy-goto-word-1))
+#+END_SRC
 *** magit
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    (use-package magit
      :ensure t
      :init
      (bind-key "C-x g" 'magit-status))
-  +END_SRC
+  #+END_SRC
 *** yasnippets
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    (use-package yasnippet
      :ensure t
      :init
      (yas-global-mode 1))
      
    (yas-reload-all)
-  +END_SRC
+  #+END_SRC
 *** rainbow
-  +BEGIN_SRC emacs-lisp
-  use-package rainbow-delimiters
+  #+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
    :ensure t
    :config 
    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
   
-  +END_SRC
+  #+END_SRC
 *** hungry delete
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    
    (use-package hungry-delete
      :ensure t
      :config
      (global-hungry-delete-mode))
 
-  +END_SRC
+  #+END_SRC
 *** flycheck
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    (use-package flycheck
      :ensure t
      :init 
      (add-hook 'c++-mode-hook #'flycheck-mode))
-  +END_SRC
+  #+END_SRC
 *** dashboard
   #+BEGIN_SRC emacs-lisp
        (use-package dashboard
@@ -205,6 +206,13 @@
 	 :hook ((after-init     . dashboard-refresh-buffer)
 		 (dashboard-mode . my/dashboard-banner)))
   #+END_SRC
+
+*** expand region
+    #+BEGIN_SRC emacs-lisp
+      (use-package expand-region
+	:ensure t)
+    #+END_SRC
+
 ** theme
 #+BEGIN_SRC emacs-lisp
   (use-package atom-one-dark-theme
@@ -268,7 +276,7 @@
 
 #+END_SRC
 ** functions
-** kill a whole word
+*** kill a whole word
   #+BEGIN_SRC emacs-lisp
     (defun kill-whole-word()
       (interactive)
@@ -364,6 +372,10 @@
 	(define-key map (kbd "M-u") 'beginning-of-buffer)
 	(define-key map (kbd "M-o") 'end-of-buffer)
 
+	;;expand region
+	(define-key map (kbd "C-e") 'er/expand-region)
+	(define-key map (kbd "C-r") 'er/contract-region)
+
 	;;deleting stuff
 	(define-key map (kbd "M-<DEL>") 'kill-line)
 
@@ -379,3 +391,4 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
+p
