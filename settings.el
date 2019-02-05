@@ -76,6 +76,11 @@
   (add-hook 'org-mode-hook (lambda ()
 			     (org-bullets-mode 1))))
 
+(setq org-hide-emphasis-markers t)
+(font-lock-add-keywords 'org-mode
+			'(("^ +\\([-*]\\) "
+			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
 (use-package beacon
   :ensure t
   :init
@@ -289,7 +294,6 @@
     "my-keys-minor-mode keymap.")
 
     (define-minor-mode my-keys-minor-mode
-    "A minor mode that overrides default keys of major modes."
     :init-value t
     :lighter " my-keys")
 

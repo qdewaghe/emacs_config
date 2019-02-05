@@ -13,39 +13,55 @@
       (package-refresh-contents)
       (package-install 'use-package))
 #+END_SRC
-* emacs settings
- 
- #+BEGIN_SRC emacs-lisp
-
-   (delete-selection-mode)
-   (global-linum-mode t)
+* minor settings
+** scrollbar 
+   #+BEGIN_SRC emacs-lisp
+   ;;removes the scrollbar in the minibuffer
    (set-window-scroll-bars (minibuffer-window) 0 'none)
-   (setq inhibit-startup-message t)
-
+   ;;removes all scrollbars
+   (scroll-bar-mode -1)
+   #+END_SRC
+** toolbar and menubar
+   #+BEGIN_SRC emacs-lisp
    (tool-bar-mode -1)
    (menu-bar-mode -1)
-   (scroll-bar-mode -1)
+   #+END_SRC
+** line and colunm number
+   #+BEGIN_SRC emacs-lisp
    (line-number-mode 1)
    (column-number-mode 1)
-
-   (setq scroll-conservatively 100)
-   (setq ring-bell-function 'ignore)
-   (global-subword-mode 1)
-
-   (global-hl-line-mode t)
-
-   (global-set-key (kbd "<f5>") 'revert-buffer)
-   (set-face-attribute 'default nil :height 150)
-
+   (global-linum-mode t)
+   #+END_SRC
+** terminal
+   #+BEGIN_SRC emacs-lisp
    (defalias 'yes-or-no-p 'y-or-n-p)
-
    (defvar my-term-shell "/bin/bash")
-
    (global-set-key (kbd "<s-return>") 'shell)
-
+    #+END_SRC
+** scrolling
+   #+BEGIN_SRC emacs-lisp
+    (setq scroll-conservatively 100)
+   #+END_SRC
+** delete selection by default
+   #+BEGIN_SRC emacs-lisp
+   (delete-selection-mode)
   #+END_SRC
- 
-* time
+** default zoom 
+   #+BEGIN_SRC
+   (set-face-attribute 'default nil :height 150)
+   #+END_SRC
+** camelCaseNavigation
+   #+BEGIN_SRC
+   (global-subword-mode 1)
+   #+END_SRC
+** other
+   #+BEGIN_SRC emacs-lisp
+   (setq inhibit-startup-message t)
+   (setq ring-bell-function 'ignore)
+   (global-hl-line-mode t)
+   (global-set-key (kbd "<f5>") 'revert-buffer)
+  #+END_SRC 
+** time
   #+BEGIN_SRC emacs-lisp
     (setq display-time-24hr-format t)
     (display-time-mode)
@@ -93,7 +109,7 @@
 #+END_SRC
 * org_mode
 #+BEGIN_SRC emacs-lisp 
-  
+
   (setq org-src-window-setup 'current-window)
 
   (use-package org-bullets
@@ -101,6 +117,11 @@
     :init
     (add-hook 'org-mode-hook (lambda ()
 			       (org-bullets-mode 1))))
+
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+			  '(("^ +\\([-*]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 #+END_SRC
 * beacon
@@ -196,7 +217,8 @@
       :init
       (bind-key "C-x g" 'magit-status))
   #+END_SRC
-* function
+* functions
+** kill a whole word
   #+BEGIN_SRC emacs-lisp
     (defun kill-whole-word()
       (interactive)
@@ -308,7 +330,7 @@
       (global-hungry-delete-mode))
 
   #+END_SRC
-* dashboardt
+* dashboard
   #+BEGIN_SRC emacs-lisp
        (use-package dashboard
 	 :preface
@@ -366,12 +388,9 @@
 	"my-keys-minor-mode keymap.")
 
 	(define-minor-mode my-keys-minor-mode
-	"A minor mode that overrides default keys of major modes."
 	:init-value t
 	:lighter " my-keys")
 
 	(my-keys-minor-mode 1)
-
-	
 
  #+END_SRC
