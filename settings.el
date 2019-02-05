@@ -11,31 +11,34 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(delete-selection-mode)
-(global-linum-mode t)
+;;removes the scrollbar in the minibuffer
 (set-window-scroll-bars (minibuffer-window) 0 'none)
-(setq inhibit-startup-message t)
+;;removes all scrollbars
+(scroll-bar-mode -1)
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
+
 (line-number-mode 1)
 (column-number-mode 1)
-
-(setq scroll-conservatively 100)
-(setq ring-bell-function 'ignore)
-(global-subword-mode 1)
-
-(global-hl-line-mode t)
-
-(global-set-key (kbd "<f5>") 'revert-buffer)
-(set-face-attribute 'default nil :height 150)
+(global-linum-mode t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
 (defvar my-term-shell "/bin/bash")
-
 (global-set-key (kbd "<s-return>") 'shell)
+
+(setq scroll-conservatively 100)
+
+(delete-selection-mode)
+
+(set-face-attribute 'default nil :height 175)
+
+(global-subword-mode 1)
+
+(setq inhibit-startup-message t)
+(setq ring-bell-function 'ignore)
+(global-hl-line-mode t)
+(global-set-key (kbd "<f5>") 'revert-buffer)
 
 (setq display-time-24hr-format t)
 (display-time-mode)
@@ -68,30 +71,10 @@
   :ensure t
   :config (which-key-mode))
 
-(setq org-src-window-setup 'current-window)
-
-(use-package org-bullets
-  :ensure t
-  :init
-  (add-hook 'org-mode-hook (lambda ()
-			     (org-bullets-mode 1))))
-
-(setq org-hide-emphasis-markers t)
-(font-lock-add-keywords 'org-mode
-			'(("^ +\\([-*]\\) "
-			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
 (use-package beacon
-  :ensure t
-  :init
-  (beacon-mode 1))
-
-(use-package atom-one-dark-theme
-  :ensure t)
-(load-theme 'atom-one-dark t)
-
-(use-package color-theme
-  :ensure t)
+    :ensure t
+    :init
+    (beacon-mode 1))
 
 (use-package projectile
   :ensure t
@@ -99,6 +82,76 @@
   :config
   (projectile-mode)
   (setq projectile-completion-system 'ivy))
+
+(use-package swiper
+:ensure try
+  :bind (("C-f" . swiper)
+	 ("C-F" . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file))
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+(use-package avy
+  :ensure t
+  :bind ("M-f" . avy-goto-word-1))
+
+(use-package magit
+  :ensure t
+  :init
+  (bind-key "C-x g" 'magit-status))
+
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1))
+
+(yas-reload-all)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :config 
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package hungry-delete
+  :ensure t
+  :config
+  (global-hungry-delete-mode))
+
+(use-package flycheck
+  :ensure t
+  :init 
+  (add-hook 'c++-mode-hook #'flycheck-mode))
+
+(use-package dashboard
+  :preface
+  (defun my/dashboard-banner ()
+     "Set a dashboard banner including information on package initialization
+  time and garbage collections."""
+     (setq dashboard-banner-logo-title
+	   (format "Emacs ready in %.2f seconds with %d garbage collections. "
+		   (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+  :config
+  (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+  (setq dashboard-items '((projects . 5)
+			   (recents . 5)
+			   (agenda . 5)
+			   ))
+  (dashboard-setup-startup-hook)
+  :hook ((after-init     . dashboard-refresh-buffer)
+	  (dashboard-mode . my/dashboard-banner)))
+
+(use-package atom-one-dark-theme
+  :ensure t)
+(load-theme 'atom-one-dark t)
+
+(use-package color-theme
+  :ensure t)
 
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -131,28 +184,18 @@
   (setq ivy-use-virtual-buffers t)
   (setq ivy-display-style 'fancy))
 
-(use-package swiper
-:ensure try
-  :bind (("C-f" . swiper)
-	 ("C-F" . swiper)
-	 ("C-c C-r" . ivy-resume)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file))
-  :config
-  (progn
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy)
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
-(use-package avy
-  :ensure t
-  :bind ("M-s" . avy-goto-word-1))
+(setq org-src-window-setup 'current-window)
 
-(use-package magit
+(use-package org-bullets
   :ensure t
   :init
-  (bind-key "C-x g" 'magit-status))
+  (add-hook 'org-mode-hook (lambda ()
+			     (org-bullets-mode 1))))
+
+(setq org-hide-emphasis-markers t)
+(font-lock-add-keywords 'org-mode
+			'(("^ +\\([-*]\\) "
+			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (defun kill-whole-word()
   (interactive)
@@ -160,69 +203,40 @@
   (kill-word 1))
 (global-set-key (kbd "C-c w w") 'kill-whole-word)
 
-(use-package flycheck
-  :ensure t
-  :init 
-  (add-hook 'c++-mode-hook #'flycheck-mode))
-
 (setq c-default-style "bsd"
       c-basic-offset 3)
 
-(use-package ggtags
-  :ensure t
-  :config
-  (add-hook 'c-mode-common-hook
-	    (lambda ()
-	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-		(ggtags-mode 1))))
-)
-
-(use-package rainbow-delimiters
-  :ensure t
-  :config 
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
-(use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode 1))
-
-(yas-reload-all)
-
 (use-package cquery
-    :ensure t
-    :init
-    (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
-    :config
-    (add-hook 'c-mode-common-hook 'lsp))
+  :ensure t
+  :commands lsp
+  :init
+  (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
+  (add-hook 'c-mode-hook #'cquery//enable)
+  (add-hook 'c++-mode-hook #'cquery//enable))
+  :config
+  (add-hook 'c-mode-common-hook 'lsp)
 
-  (use-package lsp-mode
-    :ensure t
-    :commands lsp)
-
-  (defun cquery//enable ()
+(defun cquery//enable ()
   (condition-case nil
       (lsp)
     (user-error nil)))
 
-  (use-package cquery
-    :ensure t
-    :commands lsp
-    :init (add-hook 'c-mode-hook #'cquery//enable)
-    (add-hook 'c++-mode-hook #'cquery//enable))
+(use-package lsp-mode
+  :ensure t
+  :commands lsp)
 
-  (use-package lsp-ui
-    :ensure t
-    :commands lsp-ui-mode
-    :init
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :init
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-  (use-package company
-    :ensure t
-    :config
-    (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 3)
-    (global-company-mode t))
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (global-company-mode t))
 
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "M-n") nil)
@@ -230,36 +244,13 @@
   (define-key company-active-map (kbd "H-i") 'company-select-previous)
   (define-key company-active-map (kbd "C-k") 'company-select-next))
 
-  (use-package company-lsp
-    :ensure t
-    :commands company-lsp
-    :init
-    (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-    :config
-    (push 'company-lsp company-backends))
-
-(use-package hungry-delete
+(use-package company-lsp
   :ensure t
+  :commands company-lsp
+  :init
+  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
   :config
-  (global-hungry-delete-mode))
-
-(use-package dashboard
-  :preface
-  (defun my/dashboard-banner ()
-     "Set a dashboard banner including information on package initialization
-  time and garbage collections."""
-     (setq dashboard-banner-logo-title
-	   (format "Emacs ready in %.2f seconds with %d garbage collections. "
-		   (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
-  :config
-  (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
-  (setq dashboard-items '((projects . 5)
-			   (recents . 5)
-			   (agenda . 5)
-			   ))
-  (dashboard-setup-startup-hook)
-  :hook ((after-init     . dashboard-refresh-buffer)
-	  (dashboard-mode . my/dashboard-banner)))
+  (push 'company-lsp company-backends))
 
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
