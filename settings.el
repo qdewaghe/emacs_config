@@ -35,13 +35,46 @@
 
 (global-subword-mode 1)
 
+(setq display-time-24hr-format t)
+(display-time-mode)
+
+(setq electric-pair-pairs
+       '(
+  	 (?\" . ?\")
+  	 (?\{ . ?\})))
+
+	 (electric-pair-mode)
+
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 (global-hl-line-mode t)
 (global-set-key (kbd "<f5>") 'revert-buffer)
 
-(setq display-time-24hr-format t)
-(display-time-mode)
+(use-package diminish
+  :ensure t)
+
+(eval-after-load "my-keys" '(diminish 'my-keys-minor-mode))
+(eval-after-load "beacon" '(diminish 'beacon-mode))
+(eval-after-load "org mode src" '(diminish 'org-src-mode))
+(eval-after-load "subword" '(diminish 'subword-mode))
+(eval-after-load "eldoc" '(diminish 'eldoc-mode))
+(eval-after-load "projectile" '(diminish 'projectile-mode))
+(eval-after-load "which-key" '(diminish 'which-key-mode))
+(eval-after-load "hungry delete" '(diminish 'hungry-delete-mode))
+(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
+(eval-after-load "company-mode" '(diminish 'company-mode))
+
+(use-package try
+ :ensure t)
+
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+
+(use-package beacon
+   :ensure t
+   :init
+   (beacon-mode 1))
 
 (use-package projectile
   :ensure t

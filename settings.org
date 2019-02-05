@@ -54,6 +54,21 @@
    #+BEGIN_SRC emacs-lisp
    (global-subword-mode 1)
    #+END_SRC
+*** time
+  #+BEGIN_SRC emacs-lisp
+    (setq display-time-24hr-format t)
+    (display-time-mode)
+  #+END_SRC
+*** electric
+  #+BEGIN_SRC emacs-lisp
+   (setq electric-pair-pairs
+  	  '(
+  	    (?\" . ?\")
+  	    (?\{ . ?\})))
+
+	    (electric-pair-mode)
+  			   
+  #+END_SRC
 *** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
@@ -61,11 +76,6 @@
    (global-hl-line-mode t)
    (global-set-key (kbd "<f5>") 'revert-buffer)
   #+END_SRC 
-*** time
-  #+BEGIN_SRC emacs-lisp
-    (setq display-time-24hr-format t)
-    (display-time-mode)
-  #+END_SRC
 ** packages
 *** diminish
   #+BEGIN_SRC emacs-lisp
@@ -83,29 +93,19 @@
    (eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
    (eval-after-load "company-mode" '(diminish 'company-mode))
   #+END_SRC
-*** electric
-  #+BEGIN_SRC emacs-lisp
-   (setq electric-pair-pairs
-  	  '(
-  	    (?\" . ?\")
-  	    (?\{ . ?\})))
-
-   (electric-pair-mode)
-  			   
-  #+END_SRC
 *** try
   #+BEGIN_SRC emacs-lisp 
   
-  use-package try
+  (use-package try
    :ensure t)
 
   #+END_SRC
 *** which-key
 #+BEGIN_SRC emacs-lisp
 
-(use-package which-key
-  ensure t
-  config (which-key-mode))
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
 
 #+END_SRC
 *** beacon
