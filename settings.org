@@ -74,8 +74,7 @@
    (setq inhibit-startup-message t)
    (setq ring-bell-function 'ignore)
    (global-hl-line-mode t)
-   (global-set-key (kbd "<f5>") 'revert-buffer)
-  #+END_SRC 
+   #+END_SRC 
 ** packages
 *** diminish
   #+BEGIN_SRC emacs-lisp
@@ -151,7 +150,7 @@
    (use-package magit
      :ensure t
      :init
-     (bind-key "C-x g" 'magit-status))
+     (bind-key "C-c g" 'magit-status))
   #+END_SRC
 *** yasnippets
   #+BEGIN_SRC emacs-lisp
@@ -188,23 +187,26 @@
   #+END_SRC
 *** dashboard
   #+BEGIN_SRC emacs-lisp
-       (use-package dashboard
-	 :preface
-	 (defun my/dashboard-banner ()
-	    "Set a dashboard banner including information on package initialization
-	 time and garbage collections."""
-	    (setq dashboard-banner-logo-title
-		  (format "Emacs ready in %.2f seconds with %d garbage collections. "
-			  (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
-	 :config
-	 (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
-	 (setq dashboard-items '((projects . 5)
-				  (recents . 5)
-				  (agenda . 5)
-				  ))
-	 (dashboard-setup-startup-hook)
-	 :hook ((after-init     . dashboard-refresh-buffer)
-		 (dashboard-mode . my/dashboard-banner)))
+    (use-package dashboard
+      :ensure t)
+
+
+    (use-package dashboard
+      :preface
+      (defun my/dashboard-banner ()
+	 "Set a dashboard banner including information on package initialization
+      time and garbage collections."""
+	 (setq dashboard-banner-logo-title
+	       (format "Emacs ready in %.2f seconds with %d garbage collections. "
+		       (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+      :config
+      (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+      (setq dashboard-items '((projects . 5)
+			       (recents . 5)
+			       (agenda . 5)))
+      (dashboard-setup-startup-hook)
+      :hook ((after-init     . dashboard-refresh-buffer)
+	      (dashboard-mode . my/dashboard-banner)))
   #+END_SRC
 
 *** expand region
@@ -212,7 +214,20 @@
       (use-package expand-region
 	:ensure t)
     #+END_SRC
-
+*** switch window
+    #+BEGIN_SRC emacs-lisp
+      (use-package switch-window
+	:ensure t
+	:config
+	(setq switch-window-input-style 'minibuffer)
+	(setq switch-window-increase 4)
+	(setq switch-window-threshold 2)
+	(setq switch-window-shortcut-style 'qwerty)
+	(setq switch-window-qwerty-shortcut
+	      '("a", "o", "e", "u", "i", "d", "h", "t", "n", "s"))
+	:bind
+	([remap other-window] . switch-window))
+    #+END_SRC
 ** theme
 #+BEGIN_SRC emacs-lisp
   (use-package atom-one-dark-theme
@@ -284,6 +299,32 @@
       (kill-word 1))
     (global-set-key (kbd "C-c w w") 'kill-whole-word)
     #+END_SRC
+*** reload
+    #+BEGIN_SRC emacs-lisp
+      (defun config-reload()
+	(interactive)
+	(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
+      (global-set-key (kbd "C-c r") 'config-reload)
+    #+END_SRC
+*** window
+***** split horizontally 
+      #+BEGIN_SRC emacs-lisp
+	(defun split-and-follow-horizontally ()
+	  (interactive)
+	  (split-window-below)
+	  (balance-windows)
+	  (other-window 1))
+	(global-set-key (kbd "C-c 2") 'split-and-follow-horizontally)
+      #+END_SRC
+***** split vertically
+      #+BEGIN_SRC emacs-lisp
+	(defun split-and-follow-vertically ()
+	    (interactive)
+	    (split-window-right)
+	    (balance-windows)
+	    (other-window 1))
+	(global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
+      #+END_SRC
 ** c++
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
@@ -349,15 +390,23 @@
    #+END_SRC
 
 ** keybindings
-
   #+BEGIN_SRC emacs-lisp
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
 	(define-key map (kbd "C-s") 'save-buffer)
-
-	;;navigation by one
+	
+	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+	;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
+	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
+
+	;;window
+	(define-key map (kbd "C-c 1") 'delete-other-windows)
+	(define-key map (kbd "C-c 0") 'delete-window)
+    
+	;;navigation by one
+
 	(define-key map (kbd "H-i") 'previous-line)
 	(define-key map (kbd "C-k") 'next-line)
 	(define-key map (kbd "C-j") 'backward-char)
@@ -382,7 +431,7 @@
 	;;deleting stuff
 	(define-key map (kbd "M-<DEL>") 'kill-line)
 
- 	;;main keys
+	;;main keys
 	(define-key map (kbd "`") 'execute-extended-command)
 	  map)
 	"my-keys-minor-mode keymap.")
@@ -394,4 +443,8 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
+
+ #+RESULTS:
+ : t
+
 

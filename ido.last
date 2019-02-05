@@ -2,7 +2,6 @@
 
 ;; ----- ido-last-directory-list -----
 (
- ("/home/quentin/" . "Desktop/")
  ("/home/quentin/.emacs.d/" . "auto-save-list/")
 )
 
@@ -20,11 +19,15 @@
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/quentin/.emacs.d/" (23641 26983 475975 587000) "init.el" "recentf" ".directory" "pepe.png" ".#settings.org" "../" ".git/" ".gitmodules" "snippets/" "projectile-bookmarks.eld" ".lsp-session-v1" "settings.el" "ccls/" "key" "auto-save-list/" "recentf~" "cquery/" "elpa/" "key.pub" "ido.last" "ido.last~" "settings.org" "ac-comphist.dat" "README.md" "./" ".gitignore" "network-security.data")
+ ("c:/Users/Quentin/AppData/Roaming/.emacs.d/" (23641 62399 0 0) "snippets/" "settings.org" "settings.el" "recentf~" "recentf" "README.md" "projectile-bookmarks.eld" "pepe.png" "irony/" "init.el" "ido.last~" "ido.last" "elpa/" "cquery/" "auto-save-list/" "ac-comphist.dat" ".lsp-session-v1" ".gitmodules" ".gitignore" ".git/" ".directory" ".#settings.org" "#settings.org#" "../" "./")
 
- ("/home/quentin/" (23641 25190 636874 642000) "Downloads/" ".factorio/" "modelio/" ".directory" "Videos/" "#foo#" "Pictures/" "vsls-reqs" ".wine/" ".oracle_jre_usage/" ".Xauthority" ".pylint.d/" ".dbus/" ".local/" "cachedir/" ".steampath" "projects/" ".vscode/" ".pia_manager/" ".gconf/" "Qt/" "TUTORIAL" "../" ".nano/" "SubEdit/" ".presage/" ".git/" "Nextcloud/" ".wget-hsts" ".profile" ".mlterm/" ".gtkrc-2.0" ".face" ".java/" ".gnome/" ".bash_history" ".kde/" ".recently-used" ".gitkraken/" "org/" ".mplayer/" "my_init.org" ".bashrc" ".swt/" "#TUTORIAL#" ".config/" ".aegisub/" ".gitconfig" ".emacs~" ".steam/" ".xinputrc" "Music/" ".face.icon" ".xsession-errors" ".modelio/" "dev/" ".mozilla/" "Steam/" "clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-16.04.tar.xz" ".steampid" ".mono/" "Desktop/" ".com.privateinternetaccess.vpn/" ".emacs.d/" ".conan/" ".gnupg/" ".doom.d/" ".ssh/" ".gtk-bookmarks" ".pki/" "Documents/" ".subversion/" "quentin/" ".audacity-data/" ".bash_logout" ".cache/" ".fonts.conf" ".android/" "README.md" "./" "Public/" "qtcreator/" ".jubler/" "pia.sh" "Templates/")
+ ("c:/dev/cpp/" (23610 21658 0 0) "vcpkg/" "TCP_Client/" "SRT-Creator/" "Hazel/" "cpp_starter_project/" "build-SRT_Creator-Desktop_Qt_5_11_0_MSVC2017_64bit-Debug/" ".vs/" "../" "./")
 
- ("/home/quentin/Desktop/" (23626 14271 700535 418000) "../" "andromeda/" "./" "Factorio.desktop")
+ ("c:/dev/cpp/cpp_starter_project/" (23638 44259 0 0) "vendor/" "tests/" "src/" "README.md" "premake5.lua" "LICENSE" "include/" "cpp_starter_project.sln" "build/" ".vscode/" ".vs/" ".gitlab-ci.yml" ".gitignore" ".git/" "../" "./")
+
+ ("/home/quentin/" (23637 50254 260003 946000) "Downloads/" ".factorio/" "modelio/" ".directory" "Videos/" "#foo#" "Pictures/" "vsls-reqs" ".wine/" ".oracle_jre_usage/" ".Xauthority" ".pylint.d/" ".dbus/" ".local/" "cachedir/" ".steampath" "projects/" ".vscode/" ".pia_manager/" ".gconf/" "Qt/" "TUTORIAL" "../" ".nano/" "SubEdit/" ".presage/" ".git/" "Nextcloud/" ".wget-hsts" ".profile" ".mlterm/" ".gtkrc-2.0" ".face" ".java/" ".gnome/" ".bash_history" ".kde/" ".recently-used" ".gitkraken/" "org/" ".mplayer/" "my_init.org" ".bashrc" ".swt/" "#TUTORIAL#" ".config/" ".aegisub/" ".gitconfig" ".emacs~" ".steam/" "cquery/" ".xinputrc" "Music/" ".face.icon" ".xsession-errors" ".modelio/" "dev/" ".mozilla/" "Steam/" ".steampid" ".mono/" "Desktop/" ".com.privateinternetaccess.vpn/" ".emacs.d/" ".conan/" ".gnupg/" ".doom.d/" ".ssh/" ".gtk-bookmarks" ".pki/" "Documents/" ".subversion/" "quentin/" ".audacity-data/" ".bash_logout" ".cache/" ".fonts.conf" ".android/" "README.md" "./" "Public/" "qtcreator/" ".jubler/" "pia.sh" "Templates/")
+
+ ("/home/quentin/.emacs.d/" (23637 63493 313558 936000) "init.el" "recentf" "../" ".git/" "snippets/" "projectile-bookmarks.eld" "#settings.org_archive#" "settings.el" ".#settings.org_archive" "key" "settings.org~" "auto-save-list/" "recentf~" "elpa/" "init.el~" "#ac-comphist.dat#" "key.pub" "ido.last" "ido.last~" "settings.org" "ac-comphist.dat" "README.md" "./" ".gitignore")
 
  ("/home/quentin/dev/notes/" (23637 62212 424501 216000) "todo.org" "../" ".git/" "todo.org~" "./" ".gitignore")
 

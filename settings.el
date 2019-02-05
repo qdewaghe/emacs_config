@@ -48,7 +48,6 @@
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 (global-hl-line-mode t)
-(global-set-key (kbd "<f5>") 'revert-buffer)
 
 (use-package diminish
   :ensure t)
@@ -105,7 +104,7 @@
 (use-package magit
   :ensure t
   :init
-  (bind-key "C-x g" 'magit-status))
+  (bind-key "C-c g" 'magit-status))
 
 (use-package yasnippet
   :ensure t
@@ -130,6 +129,10 @@
 ;;  (add-hook 'c++-mode-hook #'flycheck-mode))
 
 (use-package dashboard
+  :ensure t)
+
+
+(use-package dashboard
   :preface
   (defun my/dashboard-banner ()
      "Set a dashboard banner including information on package initialization
@@ -141,14 +144,25 @@
   (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
   (setq dashboard-items '((projects . 5)
 			   (recents . 5)
-			   (agenda . 5)
-			   ))
+			   (agenda . 5)))
   (dashboard-setup-startup-hook)
   :hook ((after-init     . dashboard-refresh-buffer)
 	  (dashboard-mode . my/dashboard-banner)))
 
 (use-package expand-region
   :ensure t)
+
+(use-package switch-window
+  :ensure t
+  :config
+  (setq switch-window-input-style 'minibuffer)
+  (setq switch-window-increase 4)
+  (setq switch-window-threshold 2)
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-qwerty-shortcut
+	'("a", "o", "e", "u", "i", "d", "h", "t", "n", "s"))
+  :bind
+  ([remap other-window] . switch-window))
 
 (use-package atom-one-dark-theme
   :ensure t)
@@ -206,6 +220,25 @@
   (backward-word)
   (kill-word 1))
 (global-set-key (kbd "C-c w w") 'kill-whole-word)
+
+(defun config-reload()
+  (interactive)
+  (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
+(global-set-key (kbd "C-c r") 'config-reload)
+
+(defun split-and-follow-horizontally ()
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+(global-set-key (kbd "C-c 2") 'split-and-follow-horizontally)
+
+(defun split-and-follow-vertically ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
+(global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
 
 (setq c-default-style "bsd"
       c-basic-offset 3)
@@ -265,8 +298,17 @@
     (define-key map (kbd "C-z") 'undo)
     (define-key map (kbd "C-s") 'save-buffer)
 
-    ;;navigation by one
+    ;;Tab = C-i thing
     (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+    ;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
+    (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
+
+    ;;window
+    (define-key map (kbd "C-c 1") 'delete-other-windows)
+    (define-key map (kbd "C-c 0") 'delete-window)
+
+    ;;navigation by one
+
     (define-key map (kbd "H-i") 'previous-line)
     (define-key map (kbd "C-k") 'next-line)
     (define-key map (kbd "C-j") 'backward-char)
