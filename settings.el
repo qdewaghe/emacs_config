@@ -184,6 +184,78 @@
 
 (yas-reload-all)
 
+(use-package cquery
+    :ensure t
+    :init
+    (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
+    :config
+    (add-hook 'c-mode-common-hook 'lsp))
+
+  (use-package lsp-mode
+    :ensure t
+    :commands lsp)
+
+  (defun cquery//enable ()
+  (condition-case nil
+      (lsp)
+    (user-error nil)))
+
+  (use-package cquery
+    :ensure t
+    :commands lsp
+    :init (add-hook 'c-mode-hook #'cquery//enable)
+    (add-hook 'c++-mode-hook #'cquery//enable))
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode
+    :init
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (global-company-mode t))
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "H-i") 'company-select-previous)
+  (define-key company-active-map (kbd "C-k") 'company-select-next))
+
+  (use-package company-lsp
+    :ensure t
+    :commands company-lsp
+    :init
+    (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+    :config
+    (push 'company-lsp company-backends))
+
+(use-package hungry-delete
+  :ensure t
+  :config
+  (global-hungry-delete-mode))
+
+(use-package dashboard
+  :preface
+  (defun my/dashboard-banner ()
+     "Set a dashboard banner including information on package initialization
+  time and garbage collections."""
+     (setq dashboard-banner-logo-title
+	   (format "Emacs ready in %.2f seconds with %d garbage collections. "
+		   (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
+  :config
+  (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
+  (setq dashboard-items '((projects . 5)
+			   (recents . 5)
+			   (agenda . 5)
+			   ))
+  (dashboard-setup-startup-hook)
+  :hook ((after-init     . dashboard-refresh-buffer)
+	  (dashboard-mode . my/dashboard-banner)))
+
 (defvar my-keys-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-z") 'undo)
@@ -222,69 +294,3 @@
     :lighter " my-keys")
 
     (my-keys-minor-mode 1)
-
-(use-package hungry-delete
-  :ensure t
-  :config
-  (global-hungry-delete-mode))
-
-(use-package dashboard
-  :preface
-  (defun my/dashboard-banner ()
-     "Set a dashboard banner including information on package initialization
-  time and garbage collections."""
-     (setq dashboard-banner-logo-title
-	   (format "Emacs ready in %.2f seconds with %d garbage collections. "
-		   (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
-  :config
-  (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
-  (setq dashboard-items '((projects . 5)
-			   (recents . 5)
-			   (agenda . 5)
-			   ))
-  (dashboard-setup-startup-hook)
-  :hook ((after-init     . dashboard-refresh-buffer)
-	  (dashboard-mode . my/dashboard-banner)))
-
-(use-package cquery
-  :ensure t
-  :init
-  (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
-  :config
-  (add-hook 'c-mode-common-hook 'lsp))
-
-(use-package lsp-mode
-  :ensure t
-  :commands lsp)
-
-(defun cquery//enable ()
-(condition-case nil
-    (lsp)
-  (user-error nil)))
-
-(use-package cquery
-  :ensure t
-  :commands lsp
-  :init (add-hook 'c-mode-hook #'cquery//enable)
-  (add-hook 'c++-mode-hook #'cquery//enable))
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :init
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
-  (global-company-mode t))
-
-(use-package company-lsp
-  :ensure t
-  :commands company-lsp
-  :init
-  (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-  :config
-  (push 'company-lsp company-backends))
