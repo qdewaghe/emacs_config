@@ -68,7 +68,7 @@
   #+END_SRC
 ** packages
 *** diminish
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    (use-package diminish
      :ensure t)
 
@@ -82,9 +82,9 @@
    (eval-after-load "hungry delete" '(diminish 'hungry-delete-mode))
    (eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
    (eval-after-load "company-mode" '(diminish 'company-mode))
-  +END_SRC
+  #+END_SRC
 *** electric
-  +BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
    (setq electric-pair-pairs
   	  '(
   	    (?\" . ?\")
@@ -92,29 +92,29 @@
 
    (electric-pair-mode)
   			   
-  +END_SRC
+  #+END_SRC
 *** try
-  +BEGIN_SRC emacs-lisp 
+  #+BEGIN_SRC emacs-lisp 
   
   use-package try
    :ensure t)
 
-  +END_SRC
+  #+END_SRC
 *** which-key
-#+EGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 
-(ue-package which-key
+(use-package which-key
   ensure t
   config (which-key-mode))
 
-#+ND_SRC
+#+END_SRC
 *** beacon
-  +BEGIN_SRC emacs-lisp
-  use-package beacon
+  #+BEGIN_SRC emacs-lisp
+  (use-package beacon
      :ensure t
      :init
      (beacon-mode 1))
-  +END_SRC
+  #+END_SRC
 *** projectile
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
@@ -351,7 +351,6 @@
 ** keybindings
 
   #+BEGIN_SRC emacs-lisp
-
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
@@ -383,7 +382,7 @@
 	;;deleting stuff
 	(define-key map (kbd "M-<DEL>") 'kill-line)
 
-	;;main keys
+ 	;;main keys
 	(define-key map (kbd "`") 'execute-extended-command)
 	  map)
 	"my-keys-minor-mode keymap.")
@@ -395,4 +394,4 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
-p
+
