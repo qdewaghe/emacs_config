@@ -83,7 +83,11 @@
 *** diminish
   #+BEGIN_SRC emacs-lisp
    (use-package diminish
-     :ensure t)
+     :ensure t
+     :init
+     (diminish 'my-keys-minor-mode)
+     (diminish 'company-mode)
+     (diminish 'hungry-delete-mode))
 
    (eval-after-load "my-keys" '(diminish 'my-keys-minor-mode))
    (eval-after-load "beacon" '(diminish 'beacon-mode))
@@ -231,6 +235,16 @@
 	      '("a", "o", "e", "u", "i", "d", "h", "t", "n", "s"))
 	:bind
 	([remap other-window] . switch-window))
+    #+END_SRC
+*** spaceline
+    #+BEGIN_SRC emacs-lisp
+      (use-package spaceline
+	:ensure t
+	:config
+	(require 'spaceline-config)
+	(setq powerline-default-separator (quote arrow))
+	(spaceline-spacemacs-theme))
+
     #+END_SRC
 ** theme
 #+BEGIN_SRC emacs-lisp
@@ -454,4 +468,3 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
-

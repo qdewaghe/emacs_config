@@ -52,7 +52,11 @@
 (global-hl-line-mode t)
 
 (use-package diminish
-  :ensure t)
+  :ensure t
+  :init
+  (diminish 'my-keys-minor-mode)
+  (diminish 'company-mode)
+  (diminish 'hungry-delete-mode))
 
 (eval-after-load "my-keys" '(diminish 'my-keys-minor-mode))
 (eval-after-load "beacon" '(diminish 'beacon-mode))
@@ -166,6 +170,13 @@
   :bind
   ([remap other-window] . switch-window))
 
+(use-package spaceline
+  :ensure t
+  :config
+  (require 'spaceline-config)
+  (setq powerline-default-separator (quote arrow))
+  (spaceline-spacemacs-theme))
+
 (use-package atom-one-dark-theme
   :ensure t)
 (load-theme 'atom-one-dark t)
@@ -210,10 +221,11 @@
   (kill-word 1))
 (global-set-key (kbd "C-c w w") 'kill-whole-word)
 
-(defun config-reload()
-  (interactive)
-  (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
-(global-set-key (kbd "<f5>") 'config-reload)
+;;f has to be lowercase btw
+  (defun config-reload()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
+  (global-set-key (kbd "<f5>") 'config-reload)
 
 (defun split-and-follow-horizontally ()
   (interactive)
