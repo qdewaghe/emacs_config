@@ -45,6 +45,8 @@
 
 	 (electric-pair-mode)
 
+(global-auto-revert-mode t)
+
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 (global-hl-line-mode t)

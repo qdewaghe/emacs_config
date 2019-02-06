@@ -69,6 +69,10 @@
 	    (electric-pair-mode)
   			   
   #+END_SRC
+*** global auto reverse
+    #+BEGIN_SRC emacs-lisp
+    (global-auto-revert-mode t)
+    #+END_SRC
 *** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
