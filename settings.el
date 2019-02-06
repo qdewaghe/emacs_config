@@ -213,7 +213,7 @@
 (defun config-reload()
   (interactive)
   (org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
-(global-set-key (kbd "<F5>") 'config-reload)
+(global-set-key (kbd "<f5>") 'config-reload)
 
 (defun split-and-follow-horizontally ()
   (interactive)
@@ -293,6 +293,7 @@
 
     ;;Tab = C-i thing
     (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+
     ;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
     (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
 
@@ -302,6 +303,14 @@
     (define-key map (kbd "C-c 0") 'delete-window)
     (define-key map (kbd "C-c C-0") 'delete-window)
     (define-key map (kbd "C-c o") 'switch-window)
+
+    ;;switch buffer
+    (define-key map (kbd "C-c b") 'ivy-switch-buffer)
+    (define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
+
+    ;;copy/cut paste	
+    (define-key map (kbd "C-c C-y") 'kill-ring-save)
+    (define-key map (kbd "C-c f") 'kill-region)
 
     ;;mark
     (define-key map (kbd "<C-tab>") 'set-mark-command)
