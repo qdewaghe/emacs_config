@@ -171,18 +171,19 @@
   ([remap other-window] . switch-window))
 
 (use-package spaceline
+:ensure t
+:init
+(setq powerline-default-separator 'slant)
+:config
+(spaceline-emacs-theme)
+(spaceline-toggle-minor-modes-off)
+(spaceline-toggle-buffer-size-off)
+(spaceline-toggle-evil-state-on))
+
+(use-package doom-themes
   :ensure t
   :config
-  (require 'spaceline-config)
-  (setq powerline-default-separator (quote arrow))
-  (spaceline-spacemacs-theme))
-
-(use-package atom-one-dark-theme
-  :ensure t)
-(load-theme 'atom-one-dark t)
-
-(use-package color-theme
-  :ensure t)
+(load-theme 'doom-one t))
 
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)

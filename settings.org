@@ -1,4 +1,4 @@
-** repositories
+* repositories
 #+BEGIN_SRC emacs-lisp
     (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
     (require 'package)
@@ -13,53 +13,53 @@
       (package-refresh-contents)
       (package-install 'use-package))
 #+END_SRC
-** minor settings 
-*** scrollbar
+* minor settings 
+** scrollbar
    #+BEGIN_SRC emacs-lisp
    ;;removes the scrollbar in the minibuffer
    (set-window-scroll-bars (minibuffer-window) 0 'none)
    ;;removes all scrollbars
    (scroll-bar-mode -1)
    #+END_SRC
-*** toolbar and menubar
+** toolbar and menubar
    #+BEGIN_SRC emacs-lisp
    (tool-bar-mode -1)
    (menu-bar-mode -1)
    #+END_SRC
-*** line and colunm number
+** line and colunm number
    #+BEGIN_SRC emacs-lisp
    (line-number-mode 1)
    (column-number-mode 1)
    (global-linum-mode t)
    #+END_SRC
-*** terminal
+** terminal
    #+BEGIN_SRC emacs-lisp
    (defalias 'yes-or-no-p 'y-or-n-p)
    (defvar my-term-shell "/bin/bash")
    (global-set-key (kbd "<s-return>") 'shell)
     #+END_SRC
-*** scrolling
+** scrolling
    #+BEGIN_SRC emacs-lisp
     (setq scroll-conservatively 100)
    #+END_SRC
-*** delete selection by default
+** delete selection by default
    #+BEGIN_SRC emacs-lisp
    (delete-selection-mode)
   #+END_SRC
-*** default zoom 
+** default zoom 
    #+BEGIN_SRC emacs-lisp
    (set-face-attribute 'default nil :height 175)
    #+END_SRC
-*** camelCaseNavigation
+** camelCaseNavigation
    #+BEGIN_SRC emacs-lisp
    (global-subword-mode 1)
    #+END_SRC
-*** time
+** time
   #+BEGIN_SRC emacs-lisp
     (setq display-time-24hr-format t)
     (display-time-mode)
   #+END_SRC
-*** electric
+** electric
   #+BEGIN_SRC emacs-lisp
    (setq electric-pair-pairs
   	  '(
@@ -69,18 +69,18 @@
 	    (electric-pair-mode)
   			   
   #+END_SRC
-*** global auto reverse
+** global auto reverse
     #+BEGIN_SRC emacs-lisp
     (global-auto-revert-mode t)
     #+END_SRC
-*** other
+** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
    (setq ring-bell-function 'ignore)
    (global-hl-line-mode t)
    #+END_SRC 
-** packages
-*** diminish
+* packages
+** diminish
   #+BEGIN_SRC emacs-lisp
    (use-package diminish
      :ensure t
@@ -100,14 +100,14 @@
    (eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
    (eval-after-load "company-mode" '(diminish 'company-mode))
   #+END_SRC
-*** try
+** try
   #+BEGIN_SRC emacs-lisp 
   
   (use-package try
    :ensure t)
 
   #+END_SRC
-*** which-key
+** which-key
 #+BEGIN_SRC emacs-lisp
 
   (use-package which-key
@@ -115,14 +115,14 @@
     :config (which-key-mode))
 
 #+END_SRC
-*** beacon
+** beacon
   #+BEGIN_SRC emacs-lisp
   (use-package beacon
      :ensure t
      :init
      (beacon-mode 1))
   #+END_SRC
-*** projectile
+** projectile
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :ensure t
@@ -132,7 +132,7 @@
       (setq projectile-completion-system 'ivy))      
 
   #+END_SRC
-*** search
+** search
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
   :ensure try
@@ -153,14 +153,14 @@
     :ensure t
     :bind ("M-f" . avy-goto-word-1))
 #+END_SRC
-*** magit
+** magit
   #+BEGIN_SRC emacs-lisp
    (use-package magit
      :ensure t
      :init
      (bind-key "C-c g" 'magit-status))
   #+END_SRC
-*** yasnippets
+** yasnippets
   #+BEGIN_SRC emacs-lisp
    (use-package yasnippet
      :ensure t
@@ -169,7 +169,7 @@
      
    (yas-reload-all)
   #+END_SRC
-*** rainbow
+** rainbow
   #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
    :ensure t
@@ -177,7 +177,7 @@
    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
   
   #+END_SRC
-*** hungry delete
+** hungry delete
   #+BEGIN_SRC emacs-lisp
    
    (use-package hungry-delete
@@ -186,14 +186,14 @@
      (global-hungry-delete-mode))
 
   #+END_SRC
-*** flycheck
+** flycheck
   #+BEGIN_SRC emacs-lisp
     ;;(use-package flycheck
     ;;  :ensure t
     ;;  :init 
     ;;  (add-hook 'c++-mode-hook #'flycheck-mode))
   #+END_SRC
-*** dashboard
+** dashboard
   #+BEGIN_SRC emacs-lisp
     (use-package dashboard
       :ensure t)
@@ -217,12 +217,12 @@
 	      (dashboard-mode . my/dashboard-banner)))
   #+END_SRC
 
-*** expand region
+** expand region
     #+BEGIN_SRC emacs-lisp
       (use-package expand-region
 	:ensure t)
     #+END_SRC
-*** switch window
+** switch window
     #+BEGIN_SRC emacs-lisp
       (use-package switch-window
 	:ensure t
@@ -236,49 +236,47 @@
 	:bind
 	([remap other-window] . switch-window))
     #+END_SRC
-*** spaceline
+** spaceline
     #+BEGIN_SRC emacs-lisp
       (use-package spaceline
-	:ensure t
-	:config
-	(require 'spaceline-config)
-	(setq powerline-default-separator (quote arrow))
-	(spaceline-spacemacs-theme))
-
+      :ensure t
+      :init
+      (setq powerline-default-separator 'slant)
+      :config
+      (spaceline-emacs-theme)
+      (spaceline-toggle-minor-modes-off)
+      (spaceline-toggle-buffer-size-off)
+      (spaceline-toggle-evil-state-on))
     #+END_SRC
-** theme
+* theme
 #+BEGIN_SRC emacs-lisp
-  (use-package atom-one-dark-theme
-    :ensure t)
-  (load-theme 'atom-one-dark t)
-
-  (use-package color-theme
-    :ensure t)
+  (use-package doom-themes
+    :ensure t
+    :config
+    (load-theme 'doom-one t))
 #+END_SRC
-** counsel ivy
+* counsel ivy
 
 #+BEGIN_SRC emacs-lisp
+  (setq indo-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode 1)
 
-(setq indo-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
+  (defalias 'list-buffers 'ibuffer)
+  (use-package counsel
+    :ensure t)
 
-(defalias 'list-buffers 'ibuffer)
-(use-package counsel
-  :ensure t
-  )
-
-(use-package ivy
-  :ensure t
-  :diminish (ivy-mode)
-  :bind (("C-x b" . ivy-switch-buffer))
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-display-style 'fancy))
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy))
 
 #+END_SRC
-** org_mode
+* org_mode
 #+BEGIN_SRC emacs-lisp 
 
   (setq org-src-window-setup 'current-window)
@@ -295,8 +293,8 @@
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 #+END_SRC
-** functions
-*** kill a whole word
+* functions
+** kill a whole word
   #+BEGIN_SRC emacs-lisp
     (defun kill-whole-word()
       (interactive)
@@ -304,7 +302,7 @@
       (kill-word 1))
     (global-set-key (kbd "C-c w w") 'kill-whole-word)
     #+END_SRC
-*** reload
+** reload
     #+BEGIN_SRC emacs-lisp
     ;;f has to be lowercase btw
       (defun config-reload()
@@ -312,8 +310,8 @@
 	(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
       (global-set-key (kbd "<f5>") 'config-reload)
     #+END_SRC
-*** window
-***** split horizontally 
+** window
+*** split horizontally 
       #+BEGIN_SRC emacs-lisp
 	(defun split-and-follow-horizontally ()
 	  (interactive)
@@ -325,7 +323,7 @@
 	(global-set-key (kbd "C-c C-2") 'split-and-follow-horizontally)
 	
       #+END_SRC
-***** split vertically
+*** split vertically
       #+BEGIN_SRC emacs-lisp
 	(defun split-and-follow-vertically ()
 	    (interactive)
@@ -336,13 +334,13 @@
 	(global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
 	(global-set-key (kbd "C-c C-3") 'split-and-follow-vertically)
       #+END_SRC
-** c++
+* c++
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
 	  c-basic-offset 3)
   #+END_SRC
-** language server
-*** cquery
+* language server
+** cquery
    #+BEGIN_SRC emacs-lisp
      (use-package cquery
        :ensure t
@@ -363,7 +361,7 @@
        :init (add-hook 'c-mode-hook #'cquery//enable)
        (add-hook 'c++-mode-hook #'cquery//enable))
    #+END_SRC
-*** lsp
+** lsp
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
       :ensure t
@@ -375,7 +373,7 @@
       :init
       (add-hook 'lsp-mode-hook 'lsp-ui-mode))
   #+END_SRC
-*** company
+** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t
@@ -400,7 +398,7 @@
 
    #+END_SRC
 
-** keybindings
+* keybindings
   #+BEGIN_SRC emacs-lisp
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
@@ -468,3 +466,4 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
+
