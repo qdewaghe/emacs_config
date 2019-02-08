@@ -2,8 +2,8 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-         ("marmalade" . "http://marmalade-repo.org/packages/")
-         ("melpa" . "http://melpa.milkbox.net/packages/")))
+	 ("marmalade" . "http://marmalade-repo.org/packages/")
+	 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
@@ -46,6 +46,8 @@
 	 (electric-pair-mode)
 
 (global-auto-revert-mode t)
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -171,14 +173,14 @@
   ([remap other-window] . switch-window))
 
 (use-package spaceline
-:ensure t
-:init
-(setq powerline-default-separator 'slant)
-:config
-(spaceline-emacs-theme)
-(spaceline-toggle-minor-modes-off)
-(spaceline-toggle-buffer-size-off)
-(spaceline-toggle-evil-state-on))
+  :ensure t
+  :init
+  (setq powerline-default-separator 'slant)
+  :config
+  (spaceline-emacs-theme)
+  (spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-buffer-size-off)
+  (spaceline-toggle-evil-state-on))
 
 (use-package doom-themes
   :ensure t
@@ -190,13 +192,14 @@
 (ido-mode 1)
 
 (defalias 'list-buffers 'ibuffer)
-(use-package counsel
+(use-package counsel  
   :ensure t)
 
 (use-package ivy
   :ensure t
   :diminish (ivy-mode)
   :bind (("C-x b" . ivy-switch-buffer))
+
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)

@@ -1,17 +1,17 @@
 * repositories
 #+BEGIN_SRC emacs-lisp
-    (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
-    (require 'package)
-    (setq package-enable-at-startup nil)
-    (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-             ("marmalade" . "http://marmalade-repo.org/packages/")
-             ("melpa" . "http://melpa.milkbox.net/packages/")))
+  (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+	   ("marmalade" . "http://marmalade-repo.org/packages/")
+	   ("melpa" . "http://melpa.milkbox.net/packages/")))
 
-    (package-initialize)
+  (package-initialize)
 
-    (unless (package-installed-p 'use-package)
-      (package-refresh-contents)
-      (package-install 'use-package))
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 #+END_SRC
 * minor settings 
 ** scrollbar
@@ -66,13 +66,16 @@
   	    (?\" . ?\")
   	    (?\{ . ?\})))
 
-	    (electric-pair-mode)
-  			   
+	    (electric-pair-mode)			   
   #+END_SRC
 ** global auto reverse
     #+BEGIN_SRC emacs-lisp
     (global-auto-revert-mode t)
     #+END_SRC
+** maximized
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+   #+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
@@ -101,19 +104,15 @@
    (eval-after-load "company-mode" '(diminish 'company-mode))
   #+END_SRC
 ** try
-  #+BEGIN_SRC emacs-lisp 
-  
+  #+BEGIN_SRC emacs-lisp
   (use-package try
    :ensure t)
-
   #+END_SRC
 ** which-key
 #+BEGIN_SRC emacs-lisp
-
   (use-package which-key
     :ensure t
     :config (which-key-mode))
-
 #+END_SRC
 ** beacon
   #+BEGIN_SRC emacs-lisp
@@ -175,16 +174,13 @@
    :ensure t
    :config 
    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-  
   #+END_SRC
 ** hungry delete
   #+BEGIN_SRC emacs-lisp
-   
    (use-package hungry-delete
      :ensure t
      :config
      (global-hungry-delete-mode))
-
   #+END_SRC
 ** flycheck
   #+BEGIN_SRC emacs-lisp
@@ -239,14 +235,14 @@
 ** spaceline
     #+BEGIN_SRC emacs-lisp
       (use-package spaceline
-      :ensure t
-      :init
-      (setq powerline-default-separator 'slant)
-      :config
-      (spaceline-emacs-theme)
-      (spaceline-toggle-minor-modes-off)
-      (spaceline-toggle-buffer-size-off)
-      (spaceline-toggle-evil-state-on))
+	:ensure t
+	:init
+	(setq powerline-default-separator 'slant)
+	:config
+	(spaceline-emacs-theme)
+	(spaceline-toggle-minor-modes-off)
+	(spaceline-toggle-buffer-size-off)
+	(spaceline-toggle-evil-state-on))
     #+END_SRC
 * theme
 #+BEGIN_SRC emacs-lisp
@@ -256,29 +252,27 @@
     (load-theme 'doom-one t))
 #+END_SRC
 * counsel ivy
-
 #+BEGIN_SRC emacs-lisp
   (setq indo-enable-flex-matching t)
   (setq ido-everywhere t)
   (ido-mode 1)
 
   (defalias 'list-buffers 'ibuffer)
-  (use-package counsel
+  (use-package counsel  
     :ensure t)
 
   (use-package ivy
     :ensure t
     :diminish (ivy-mode)
     :bind (("C-x b" . ivy-switch-buffer))
+
     :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
     (setq ivy-display-style 'fancy))
-
 #+END_SRC
 * org_mode
-#+BEGIN_SRC emacs-lisp 
-
+#+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window)
 
   (use-package org-bullets
@@ -291,7 +285,6 @@
   (font-lock-add-keywords 'org-mode
 			  '(("^ +\\([-*]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
 #+END_SRC
 * functions
 ** kill a whole word
@@ -510,6 +503,4 @@
  #+END_SRC
 
 
-aeounth
 
-aeounth
