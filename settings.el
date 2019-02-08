@@ -31,7 +31,7 @@
 
 (delete-selection-mode)
 
-(set-face-attribute 'default nil :height 175)
+(set-face-attribute 'default nil :height 150)
 
 (global-subword-mode 1)
 
@@ -265,7 +265,8 @@
   (let ((col (current-column)))
     (save-excursion
       (forward-line)
-      (transpose-lines 1))
+      (transpose-lines 1)
+      (next-line))
     (forward-line)
     (move-to-column col)))
 
@@ -276,7 +277,8 @@
    (let ((col (current-column)))
      (save-excursion
        (forward-line)
-       (transpose-lines -1))
+       (transpose-lines -1)
+       (previous-line))
      (forward-line -1)
      (move-to-column col)))
 
@@ -307,12 +309,6 @@
 (use-package lsp-mode
   :ensure t
   :commands lsp)
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :init
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
 (use-package company
   :ensure t

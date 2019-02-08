@@ -48,7 +48,7 @@
   #+END_SRC
 ** default zoom 
    #+BEGIN_SRC emacs-lisp
-   (set-face-attribute 'default nil :height 175)
+   (set-face-attribute 'default nil :height 150)
    #+END_SRC
 ** camelCaseNavigation
    #+BEGIN_SRC emacs-lisp
@@ -345,16 +345,17 @@
 ** move line
 *** down
 #+BEGIN_SRC emacs-lisp
- (defun move-line-down ()
-   (interactive)
-   (let ((col (current-column)))
-     (save-excursion
+   (defun move-line-down ()
+     (interactive)
+     (let ((col (current-column)))
+       (save-excursion
+	 (forward-line)
+	 (transpose-lines 1)
+	 (next-line))
        (forward-line)
-       (transpose-lines 1))
-     (forward-line)
-     (move-to-column col)))
+       (move-to-column col)))
 
- (global-set-key (kbd "C-c t") 'move-line-down)
+   (global-set-key (kbd "C-c t") 'move-line-down)
 #+END_SRC
 *** up
 #+BEGIN_SRC emacs-lisp
@@ -363,7 +364,8 @@
    (let ((col (current-column)))
      (save-excursion
        (forward-line)
-       (transpose-lines -1))
+       (transpose-lines -1)
+       (previous-line))
      (forward-line -1)
      (move-to-column col)))
 
@@ -401,12 +403,6 @@
     (use-package lsp-mode
       :ensure t
       :commands lsp)
-
-    (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui-mode
-      :init
-      (add-hook 'lsp-mode-hook 'lsp-ui-mode))
   #+END_SRC
 ** company
    #+BEGIN_SRC emacs-lisp
@@ -501,6 +497,3 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
-
-
-

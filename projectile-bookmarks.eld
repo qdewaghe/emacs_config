@@ -1,1 +1,1 @@
-("~/.emacs.d/")
+("~/.emacs.d/" "~/dev/boost_serial_port/" "~/dev/cpp_starter_project/")
