@@ -183,7 +183,7 @@
 (use-package doom-themes
   :ensure t
   :config
-(load-theme 'doom-one t))
+  (load-theme 'doom-one t))
 
 (setq indo-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -191,8 +191,7 @@
 
 (defalias 'list-buffers 'ibuffer)
 (use-package counsel
-  :ensure t
-  )
+  :ensure t)
 
 (use-package ivy
   :ensure t
@@ -245,6 +244,40 @@
     ;;two versions so it works anyway if I press 3 too fast
 (global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
 (global-set-key (kbd "C-c C-3") 'split-and-follow-vertically)
+
+(defun duplicate-line ()
+  (interactive)
+  (let ((col (current-column)))
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (newline)
+    (yank)
+    (move-to-column col)))
+
+(global-set-key (kbd "C-c h") 'duplicate-line)
+
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines 1))
+    (forward-line)
+    (move-to-column col)))
+
+(global-set-key (kbd "C-c t") 'move-line-down)
+
+(defun move-line-up ()
+   (interactive)
+   (let ((col (current-column)))
+     (save-excursion
+       (forward-line)
+       (transpose-lines -1))
+     (forward-line -1)
+     (move-to-column col)))
+
+(global-set-key (kbd "C-c c") 'move-line-up)
 
 (setq c-default-style "bsd"
       c-basic-offset 3)

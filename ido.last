@@ -19,6 +19,8 @@
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/home/quentin/dev/notes/rapport/" (23642 38995 845628 655000) "#rapport.org#" ".#rapport.org" "../" "rapport.org" "./")
+
  ("c:/Users/Quentin/AppData/Roaming/.emacs.d/" (23641 62399 0 0) "snippets/" "settings.org" "settings.el" "recentf~" "recentf" "README.md" "projectile-bookmarks.eld" "pepe.png" "irony/" "init.el" "ido.last~" "ido.last" "elpa/" "cquery/" "auto-save-list/" "ac-comphist.dat" ".lsp-session-v1" ".gitmodules" ".gitignore" ".git/" ".directory" ".#settings.org" "#settings.org#" "../" "./")
 
  ("c:/dev/cpp/" (23610 21658 0 0) "vcpkg/" "TCP_Client/" "SRT-Creator/" "Hazel/" "cpp_starter_project/" "build-SRT_Creator-Desktop_Qt_5_11_0_MSVC2017_64bit-Debug/" ".vs/" "../" "./")

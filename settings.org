@@ -334,6 +334,48 @@
 	(global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
 	(global-set-key (kbd "C-c C-3") 'split-and-follow-vertically)
       #+END_SRC
+** duplicate line
+#+BEGIN_SRC emacs-lisp
+ (defun duplicate-line ()
+   (interactive)
+   (let ((col (current-column)))
+     (move-beginning-of-line 1)
+     (kill-line)
+     (yank)
+     (newline)
+     (yank)
+     (move-to-column col)))
+
+ (global-set-key (kbd "C-c h") 'duplicate-line)
+
+#+END_SRC
+** move line
+*** down
+#+BEGIN_SRC emacs-lisp
+ (defun move-line-down ()
+   (interactive)
+   (let ((col (current-column)))
+     (save-excursion
+       (forward-line)
+       (transpose-lines 1))
+     (forward-line)
+     (move-to-column col)))
+
+ (global-set-key (kbd "C-c t") 'move-line-down)
+#+END_SRC
+*** up
+#+BEGIN_SRC emacs-lisp
+(defun move-line-up ()
+   (interactive)
+   (let ((col (current-column)))
+     (save-excursion
+       (forward-line)
+       (transpose-lines -1))
+     (forward-line -1)
+     (move-to-column col)))
+
+(global-set-key (kbd "C-c c") 'move-line-up)
+#+END_SRC
 * c++
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
@@ -467,3 +509,7 @@
 
  #+END_SRC
 
+
+aeounth
+
+aeounth
