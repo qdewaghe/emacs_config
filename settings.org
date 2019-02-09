@@ -430,7 +430,8 @@
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
 	(define-key map (kbd "C-s") 'save-buffer)
-	
+	(define-key map (kbd "C-c C-f") 'counsel-find-file)
+
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 	
