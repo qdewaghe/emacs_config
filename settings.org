@@ -40,6 +40,10 @@
    #+BEGIN_SRC emacs-lisp
     (setq scroll-conservatively 100)
    #+END_SRC
+** visual line mode
+#+BEGIN_SRC emacs-lisp
+(visual-line-mode 1)
+#+END_SRC
 ** delete selection by default
    #+BEGIN_SRC emacs-lisp
    (delete-selection-mode)
@@ -548,3 +552,4 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/dev/notes/todo.org"))
 #+END_SRC
+
