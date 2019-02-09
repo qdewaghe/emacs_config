@@ -4,8 +4,7 @@
   (require 'package)
   (setq package-enable-at-startup nil)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-	   ("marmalade" . "http://marmalade-repo.org/packages/")
-	   ("melpa" . "http://melpa.milkbox.net/packages/")))
+                     ("melpa" . "http://melpa.org/packages/")))
 
   (package-initialize)
 
@@ -72,10 +71,6 @@
     #+BEGIN_SRC emacs-lisp
     (global-auto-revert-mode t)
     #+END_SRC
-** maximized
-   #+BEGIN_SRC emacs-lisp
-   (add-to-list 'default-frame-alist '(fullscreen . maximized))
-   #+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
@@ -493,7 +488,7 @@
 	(define-minor-mode my-keys-minor-mode
 	:init-value t
 	:lighter " my-keys")
-
+	
 	(my-keys-minor-mode 1)
 
  #+END_SRC
