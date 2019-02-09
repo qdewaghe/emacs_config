@@ -1,6 +1,5 @@
 * repositories
 #+BEGIN_SRC emacs-lisp
-  (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (require 'package)
   (setq package-enable-at-startup nil)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -544,3 +543,8 @@
 	(my-keys-minor-mode 1)
 
  #+END_SRC
+* registers
+#+BEGIN_SRC emacs-lisp
+  (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
+  (set-register ?n(cons 'file "~/dev/notes/todo.org"))
+#+END_SRC
