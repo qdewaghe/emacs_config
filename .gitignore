@@ -50,3 +50,11 @@ projectile.cache
 
 key
 *pub
+
+settings.el
+recentf
+*.eld
+*.last
+*.md
+*.lsp-session-v1
+*.directory
