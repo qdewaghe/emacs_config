@@ -74,6 +74,10 @@
     #+BEGIN_SRC emacs-lisp
     (global-auto-revert-mode t)
     #+END_SRC
+** visual line mode
+#+BEGIN_SRC emacs-lisp
+(visual-line-mode)
+#+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-message t)
