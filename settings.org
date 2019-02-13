@@ -257,7 +257,7 @@
     :config
     (load-theme 'doom-one t))
 #+END_SRC
-* counsel ivy
+* ido counsel ivy
 #+BEGIN_SRC emacs-lisp
   (setq indo-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -271,7 +271,6 @@
     :ensure t
     :diminish (ivy-mode)
     :bind (("C-x b" . ivy-switch-buffer))
-
     :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
@@ -485,6 +484,8 @@
 	(define-key map (kbd "C-s") 'save-buffer)
 	(define-key map (kbd "C-c C-f") 'counsel-find-file)
 	(define-key map (kbd "C-c r j") 'jump-to-register)
+	(define-key map (kbd "C-v") (kbd "C-y"))
+	(define-key map (kbd "C-p") 'universal-argument)
 
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
@@ -552,4 +553,3 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/dev/notes/todo.org"))
 #+END_SRC
-
