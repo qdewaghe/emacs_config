@@ -58,3 +58,6 @@ recentf
 *.md
 *.lsp-session-v1
 *.directory
+
+# irony
+irony/

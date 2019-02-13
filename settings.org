@@ -206,7 +206,6 @@
 	       (format "Emacs ready in %.2f seconds with %d garbage collections. "
 		       (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
       :config
-      (setq dashboard-startup-banner "~/.emacs.d/pepe.png")
       (setq dashboard-items '((projects . 5)
 			       (recents . 5)
 			       (agenda . 5)))
