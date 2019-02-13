@@ -1,0 +1,1 @@
+open [[https://github.com/qdewaghe/emacs_config/blob/master/settings.org][settings.org]] to see my settings
