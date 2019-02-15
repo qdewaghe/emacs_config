@@ -84,6 +84,10 @@
    (setq ring-bell-function 'ignore)
    (global-hl-line-mode t)
    #+END_SRC 
+** org agenda
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files (quote ("~/dev/notes/todo.org")))
+#+END_SRC
 * packages
 ** diminish
   #+BEGIN_SRC emacs-lisp
@@ -196,22 +200,12 @@
     (use-package dashboard
       :ensure t)
 
-
     (use-package dashboard
-      :preface
-      (defun my/dashboard-banner ()
-	 "Set a dashboard banner including information on package initialization
-      time and garbage collections."""
-	 (setq dashboard-banner-logo-title
-	       (format "Emacs ready in %.2f seconds with %d garbage collections. "
-		       (float-time (time-subtract after-init-time before-init-time)) gcs-done)))
       :config
       (setq dashboard-items '((projects . 5)
-			       (recents . 5)
-			       (agenda . 5)))
-      (dashboard-setup-startup-hook)
-      :hook ((after-init     . dashboard-refresh-buffer)
-	      (dashboard-mode . my/dashboard-banner)))
+			       (recents . 5)))
+      (setq dashboard-startup-banner 1)
+      (dashboard-setup-startup-hook))
   #+END_SRC
 
 ** expand region
