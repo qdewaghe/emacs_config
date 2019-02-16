@@ -86,7 +86,7 @@
    #+END_SRC 
 ** org agenda
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-files (quote ("~/dropbox/notes/todo.org")))
+(setq org-agenda-files (quote ("~/Dropbox/notes/todo.org")))
 #+END_SRC
 * packages
 ** diminish
@@ -548,5 +548,5 @@
 * registers
 #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
-  (set-register ?n(cons 'file "~/dropbox/notes/todo.org"))
+  (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
