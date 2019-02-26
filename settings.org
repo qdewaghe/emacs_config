@@ -88,6 +88,10 @@
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (append  (file-expand-wildcards "~/Dropbox/notes/*.org")))
 #+END_SRC
+** undo tree
+#+BEGIN_SRC emacs-lisp
+(setq undo-tree-visualizer-timestamps t)
+#+END_SRC
 * packages
 ** diminish
   #+BEGIN_SRC emacs-lisp
@@ -287,6 +291,11 @@
   (font-lock-add-keywords 'org-mode
 			  '(("^ +\\([-*]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+#+END_SRC
+** babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+ 'org-babel-load-languages '((C . t)))
 #+END_SRC
 * functions
 ** kill a whole word
@@ -550,3 +559,5 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
+
+
