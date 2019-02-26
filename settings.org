@@ -11,7 +11,7 @@
     (package-refresh-contents)
     (package-install 'use-package))
 #+END_SRC
-* minor settings 
+* minor settings
 ** scrollbar
    #+BEGIN_SRC emacs-lisp
    ;;removes the scrollbar in the minibuffer
@@ -76,7 +76,7 @@
     #+END_SRC
 ** visual line mode
 #+BEGIN_SRC emacs-lisp
-(visual-line-mode)
+(visual-line-mode t)
 #+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
@@ -133,12 +133,13 @@
   #+END_SRC
 ** projectile
   #+BEGIN_SRC emacs-lisp
-    (use-package projectile
-      :ensure t
-      :bind ("C-c p" . projectile-command-map)
-      :config
-      (projectile-mode)
-      (setq projectile-completion-system 'ivy))      
+	(use-package projectile
+	  :ensure t
+	  :bind ("C-c p" . projectile-command-map)
+	  :config
+	  (projectile-global-mode)
+	  (setq projectile-enable-caching t)
+	  (setq projectile-completion-system 'ivy))      
 
   #+END_SRC
 ** search
@@ -430,37 +431,31 @@
 	  c-basic-offset 3)
   #+END_SRC
 * language server
-** cquery
+** ccls
    #+BEGIN_SRC emacs-lisp
-     (use-package cquery
-       :ensure t
-       :init
-       (setq cquery-executable "~/.emacs.d/cquery/build/release/bin/cquery")
-       :config
-       (add-hook 'c-mode-common-hook 'lsp))
-
-     (defun cquery//enable ()
-       (condition-case nil
-	   (lsp)
-	 (user-error nil)))
-
-     ;; I only managed to make cquery work by putting it twice
-     (use-package cquery
-       :ensure t
-       :commands lsp
-       :init (add-hook 'c-mode-hook #'cquery//enable)
-       (add-hook 'c++-mode-hook #'cquery//enable))
+     (use-package ccls
+       :ensure t)
    #+END_SRC
-** lsp
+** eglot
   #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode
-      :ensure t
-      :commands lsp)
+	(use-package eglot
+	  :ensure t
+	  :config
+	  (add-to-list 'eglot-server-programs '(c-mode "~/ccls/Release/ccls")))
+
+	(defun projectile-project-find-function (dir)
+	  (let* ((root (projectile-project-root dir)))
+	  (and root (cons 'transient root))))
+
+	(with-eval-after-load 'project
+	  (add-to-list 'project-find-functions 'projectile-project-find-function))
+
   #+END_SRC
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
        :ensure t
+       :commands company-lsp
        :config
        (setq company-idle-delay 0)
        (setq company-minimum-prefix-length 3)
@@ -472,6 +467,8 @@
        (define-key company-active-map (kbd "H-i") 'company-select-previous)
        (define-key company-active-map (kbd "C-k") 'company-select-next))
 
+     (setq company-transformers nil)
+
      (use-package company-lsp
        :ensure t
        :commands company-lsp
@@ -479,7 +476,6 @@
        (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
        :config
        (push 'company-lsp company-backends))
-
    #+END_SRC
 
 * keybindings
