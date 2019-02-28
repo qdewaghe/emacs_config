@@ -10,7 +10,7 @@
  '(org-babel-load-languages (quote ((emacs-lisp . t) (C . t))))
  '(package-selected-packages
    (quote
-    (dired+ lua-mode doom-themes doom-modeline spaceline switch-window expand-region h diminish dashboard hungry-delete rainbow-delimiters rainbow-delimiters-mode rainbow-mode beacon eglot lsp-ui cquery counsel-projectile projectile yasnippet-snippets flycheck magit zenburn-theme which-key use-package try org-bullets org counsel color-theme auto-org-md auto-complete atom-one-dark-theme ace-window))))
+    (ccls dired+ lua-mode doom-themes doom-modeline spaceline switch-window expand-region h diminish dashboard hungry-delete rainbow-delimiters rainbow-delimiters-mode rainbow-mode beacon eglot lsp-ui cquery counsel-projectile projectile yasnippet-snippets flycheck magit zenburn-theme which-key use-package try org-bullets org counsel color-theme auto-org-md auto-complete atom-one-dark-theme ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
