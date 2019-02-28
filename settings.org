@@ -76,7 +76,7 @@
     #+END_SRC
 ** visual line mode
 #+BEGIN_SRC emacs-lisp
-(visual-line-mode t)
+(global-visual-line-mode t)
 #+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
@@ -280,29 +280,29 @@
 #+END_SRC
 * org_mode
 #+BEGIN_SRC emacs-lisp
-      (setq org-src-window-setup 'current-window)
+  (setq org-src-window-setup 'current-window)
 
-      (use-package org-bullets
-	:ensure t
-	:init
-	(add-hook 'org-mode-hook (lambda ()
-				   (org-bullets-mode 1))))
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda ()
+			       (org-bullets-mode 1))))
 
-      (setq org-hide-emphasis-markers t)
-      (font-lock-add-keywords 'org-mode
-			      '(("^ +\\([-*]\\) "
-				 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+			  '(("^ +\\([-*]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-    (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
-      (cond
-       ((org-export-derived-backend-p backend 'latex)
-	(replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
-       ((org-export-derived-backend-p backend 'html)
-	(replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
+  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
+    (cond
+     ((org-export-derived-backend-p backend 'latex)
+      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
+     ((org-export-derived-backend-p backend 'html)
+      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
 
-    (eval-after-load 'ox '(add-to-list
-			   'org-export-filter-timestamp-functions
-			   'org-export-filter-timestamp-remove-brackets))
+  (eval-after-load 'ox '(add-to-list
+			 'org-export-filter-timestamp-functions
+			 'org-export-filter-timestamp-remove-brackets))
 
   (setq-default org-display-custom-times t)
 
