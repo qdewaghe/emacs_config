@@ -279,6 +279,7 @@
     (setq ivy-display-style 'fancy))
 #+END_SRC
 * org_mode
+
 #+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window)
 
@@ -307,7 +308,8 @@
   (setq-default org-display-custom-times t)
 
   (setq org-time-stamp-custom-formats
-	'("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
+	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
+
 
 #+END_SRC
 ** babel
@@ -572,5 +574,3 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
-
-
