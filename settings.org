@@ -279,7 +279,9 @@
     (setq ivy-display-style 'fancy))
 #+END_SRC
 * org_mode
+
 #+BEGIN_SRC emacs-lisp
+<<<<<<< HEAD
     (setq org-src-window-setup 'current-window)
 
     (use-package org-bullets
@@ -317,6 +319,38 @@
 
     (use-package htmlize
       :ensure t)
+=======
+  (setq org-src-window-setup 'current-window)
+
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda ()
+			       (org-bullets-mode 1))))
+
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+			  '(("^ +\\([-*]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
+    (cond
+     ((org-export-derived-backend-p backend 'latex)
+      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
+     ((org-export-derived-backend-p backend 'html)
+      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
+
+  (eval-after-load 'ox '(add-to-list
+			 'org-export-filter-timestamp-functions
+			 'org-export-filter-timestamp-remove-brackets))
+
+  (setq-default org-display-custom-times t)
+
+  (setq org-time-stamp-custom-formats
+	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
+
+
+>>>>>>> origin/master
 #+END_SRC
 ** babel
 #+BEGIN_SRC emacs-lisp
@@ -580,6 +614,9 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> origin/master
