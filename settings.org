@@ -614,9 +614,3 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> origin/master
