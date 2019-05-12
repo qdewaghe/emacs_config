@@ -289,13 +289,15 @@
 * org_mode
 
 #+BEGIN_SRC emacs-lisp
-    (setq org-src-window-setup 'current-window)
 
-    (use-package org-bullets
-      :ensure t
-      :init
-      (add-hook 'org-mode-hook (lambda ()
-				 (org-bullets-mode 1))))
+  (setq org-src-window-setup 'current-window)
+
+
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda ()
+			       (org-bullets-mode 1))))
 
     (setq org-hide-emphasis-markers t)
     (font-lock-add-keywords 'org-mode
@@ -312,15 +314,25 @@
     (eval-after-load 'ox '(add-to-list
 			   'org-export-filter-timestamp-functions
 			   'org-export-filter-timestamp-remove-brackets))
+<<<<<<< HEAD
     (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
+=======
+>>>>>>> ca8e05f52054c57e7120ffd27367cdd83a9b8a6a
 
-    (setq-default org-display-custom-times t)
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
 
+  (setq-default org-display-custom-times t)
+
+  (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
+  (require 'ox-reveal)
+
+<<<<<<< HEAD
     (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
     (require 'ox-reveal)
+=======
+>>>>>>> ca8e05f52054c57e7120ffd27367cdd83a9b8a6a
     (setq org-time-stamp-custom-formats
 	  '("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
-    (setq org-reveal-root "")
     (setq org-reveal-mathjax t)
 
     (use-package htmlize
@@ -636,3 +648,4 @@
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
+
