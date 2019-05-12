@@ -314,10 +314,8 @@
     (eval-after-load 'ox '(add-to-list
 			   'org-export-filter-timestamp-functions
 			   'org-export-filter-timestamp-remove-brackets))
-<<<<<<< HEAD
-    (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
-=======
->>>>>>> ca8e05f52054c57e7120ffd27367cdd83a9b8a6a
+
+
 
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
 
@@ -325,12 +323,8 @@
 
   (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
   (require 'ox-reveal)
-
-<<<<<<< HEAD
-    (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
     (require 'ox-reveal)
-=======
->>>>>>> ca8e05f52054c57e7120ffd27367cdd83a9b8a6a
+
     (setq org-time-stamp-custom-formats
 	  '("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
     (setq org-reveal-mathjax t)
