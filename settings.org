@@ -11,6 +11,79 @@
     (package-refresh-contents)
     (package-install 'use-package))
 #+END_SRC
+* keybindings
+  #+BEGIN_SRC emacs-lisp
+    (defvar my-keys-minor-mode-map
+      (let ((map (make-sparse-keymap)))
+	(define-key map (kbd "C-z") 'undo)
+	(define-key map (kbd "C-s") 'save-buffer)
+	(define-key map (kbd "C-c C-f") 'counsel-find-file)
+	(define-key map (kbd "C-c r j") 'jump-to-register)
+	(define-key map (kbd "C-v") (kbd "C-y"))
+	(define-key map (kbd "C-p") 'universal-argument)
+
+	;;Tab = C-i thing
+	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+	
+	;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
+	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
+
+	;;window with two versions so it works even if I press the number too fast
+	(define-key map (kbd "C-c 1") 'delete-other-windows)
+	(define-key map (kbd "C-c C-1") 'delete-other-windows)
+	(define-key map (kbd "C-c 0") 'delete-window)
+	(define-key map (kbd "C-c C-0") 'delete-window)
+	(define-key map (kbd "C-c o") 'switch-window)
+	(define-key map (kbd "C-c a") 'ff-find-other-file)
+
+	;;switch buffer
+	(define-key map (kbd "C-c b") 'ivy-switch-buffer)
+	(define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
+	
+	;;copy/cut paste	
+	(define-key map (kbd "C-c C-y") 'kill-ring-save)
+	(define-key map (kbd "C-c f") 'kill-region)
+	
+	;;mark
+	(define-key map (kbd "<C-tab>") 'set-mark-command)
+
+	;;navigation by one
+	(define-key map (kbd "H-i") 'previous-line)
+	(define-key map (kbd "C-k") 'next-line)
+	(define-key map (kbd "C-j") 'backward-char)
+	(define-key map (kbd "C-l") 'forward-char)
+
+	;;navigation by one element
+	(define-key map (kbd "M-i") 'backward-sentence)	
+	(define-key map (kbd "M-k") 'forward-sentence)
+	(define-key map (kbd "M-j") 'backward-word)
+	(define-key map (kbd "M-l") 'forward-word)
+
+	;;move to end of *
+	(define-key map (kbd "C-u") 'move-beginning-of-line)
+	(define-key map (kbd "C-o") 'move-end-of-line)
+	(define-key map (kbd "M-u") 'beginning-of-buffer)
+	(define-key map (kbd "M-o") 'end-of-buffer)
+
+	;;expand region
+	(define-key map (kbd "C-e") 'er/expand-region)
+	(define-key map (kbd "C-r") 'er/contract-region)
+
+	;;deleting stuff
+	(define-key map (kbd "M-<DEL>") 'kill-line)
+
+	;;main keys
+	(define-key map (kbd "`") 'execute-extended-command)
+	  map)
+	"my-keys-minor-mode keymap.")
+
+	(define-minor-mode my-keys-minor-mode
+	:init-value t
+	:lighter " my-keys")
+	
+	(my-keys-minor-mode 1)
+
+ #+END_SRC
 * minor settings
 ** scrollbar
    #+BEGIN_SRC emacs-lisp
@@ -38,7 +111,15 @@
     #+END_SRC
 ** scrolling
    #+BEGIN_SRC emacs-lisp
-    (setq scroll-conservatively 100)
+     (setq
+      scroll-conservatively 1000                     
+      scroll-margin 4                                
+      scroll-step 1                                  
+      mouse-wheel-scroll-amount '(6 ((shift) . 1))   
+      mouse-wheel-progressive-speed nil
+      redisplay-dont-pause t
+      fast-but-imprecise-scrolling nil
+      jit-lock-defer-time 0)
    #+END_SRC
 ** visual line mode
 #+BEGIN_SRC emacs-lisp
@@ -50,7 +131,7 @@
   #+END_SRC
 ** default zoom 
    #+BEGIN_SRC emacs-lisp
-   (set-face-attribute 'default nil :height 150)
+   (set-face-attribute 'default nil :height 175)
    #+END_SRC
 ** camelCaseNavigation
    #+BEGIN_SRC emacs-lisp
@@ -282,6 +363,7 @@
 #+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window)
 
+
   (use-package org-bullets
     :ensure t
     :init
@@ -292,7 +374,6 @@
   (font-lock-add-keywords 'org-mode
 			  '(("^ +\\([-*]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
 
   (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
     (cond
@@ -348,19 +429,23 @@
   (setq org-time-stamp-custom-formats
 	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
 
-  (add-to-list 'org-latex-packages-alist '("" "listingsutf8"))
 
-  (setq org-highlight-latex-and-related '(latex script entities))
 
-  (setq org-src-fontify-natively t)
+  (require 'org)
   (require 'ox-latex)
   (add-to-list 'org-latex-packages-alist '("" "minted"))
-  (setq org-latex-listings 'minted)
+  (setq org-latex-listings 'minted) 
+  (setq org-src-fontify-natively t)
 
   (setq org-latex-pdf-process
 	'("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+
+
+
+
 #+END_SRC
 ** babel
 #+BEGIN_SRC emacs-lisp
@@ -497,27 +582,43 @@
   (global-set-key (kbd "C-c c") 'move-text-up)
   (global-set-key (kbd "C-c t") 'move-text-down)
 #+END_SRC
-* c++
+* languages
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
 	  c-basic-offset 3)
+
 
     (use-package modern-cpp-font-lock
       :ensure t
       :hook (c++-mode . modern-c++-font-lock-mode))
 
+
+    (add-hook 'lua-mode-hook 
+	      (lambda () (unless (fboundp 'lua-calculate-indentation-right-shift-next)
+			   (load-file (locate-file "my-lua.el" load-path)))))
+
   #+END_SRC
 * language server
 ** ccls
    #+BEGIN_SRC emacs-lisp
-     (use-package ccls
-       :ensure t)
+	 (use-package ccls
+	   :ensure t)
 
-     (setq ccls-sem-highlight-method 'font-lock)
-     (ccls-use-default-rainbow-sem-highlight)
+	 (setq ccls-sem-highlight-method 'font-lock)
+	 (ccls-use-default-rainbow-sem-highlight)
 
-     (with-eval-after-load 'projectile
-       (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
+	 (with-eval-after-load 'projectile
+	   :ensure t
+	   :hook ((c-mode c++-mode objc-mode) . 
+		  (lambda () (require 'ccls) (lsp)))
+
+	 (setq lsp-prefer-flymake nil)
+
+	 (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache")
+	 (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
+	 (ccls-use-default-rainbow-sem-highlight)
+
    #+END_SRC
 ** lsp
   #+BEGIN_SRC emacs-lisp
@@ -525,10 +626,8 @@
     (use-package company-lsp :ensure t :commands company-lsp)
 
     (use-package ccls
-      :hook ((c-mode c++-mode objc-mode) .
-	     (lambda () (require 'ccls) (lsp))))
-
-    (setq ccls-executable "~/ccls/Release/ccls")
+    :hook ((c-mode c++-mode objc-mode) .
+	   (lambda () (require 'ccls) (lsp))))
   #+END_SRC
 
 ** company
@@ -549,79 +648,6 @@
    
        (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
    #+END_SRC
-* keybindings
-  #+BEGIN_SRC emacs-lisp
-    (defvar my-keys-minor-mode-map
-      (let ((map (make-sparse-keymap)))
-	(define-key map (kbd "C-z") 'undo)
-	(define-key map (kbd "C-s") 'save-buffer)
-	(define-key map (kbd "C-c C-f") 'counsel-find-file)
-	(define-key map (kbd "C-c r j") 'jump-to-register)
-	(define-key map (kbd "C-v") (kbd "C-y"))
-	(define-key map (kbd "C-p") 'universal-argument)
-
-	;;Tab = C-i thing
-	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
-	
-	;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
-	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
-
-	;;window with two versions so it works even if I press the number too fast
-	(define-key map (kbd "C-c 1") 'delete-other-windows)
-	(define-key map (kbd "C-c C-1") 'delete-other-windows)
-	(define-key map (kbd "C-c 0") 'delete-window)
-	(define-key map (kbd "C-c C-0") 'delete-window)
-	(define-key map (kbd "C-c o") 'switch-window)
-	(define-key map (kbd "C-c a") 'ff-find-other-file)
-
-	;;switch buffer
-	(define-key map (kbd "C-c b") 'ivy-switch-buffer)
-	(define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
-	
-	;;copy/cut paste	
-	(define-key map (kbd "C-c C-y") 'kill-ring-save)
-	(define-key map (kbd "C-c f") 'kill-region)
-	
-	;;mark
-	(define-key map (kbd "<C-tab>") 'set-mark-command)
-
-	;;navigation by one
-	(define-key map (kbd "H-i") 'previous-line)
-	(define-key map (kbd "C-k") 'next-line)
-	(define-key map (kbd "C-j") 'backward-char)
-	(define-key map (kbd "C-l") 'forward-char)
-
-	;;navigation by one element
-	(define-key map (kbd "M-i") 'backward-sentence)	
-	(define-key map (kbd "M-k") 'forward-sentence)
-	(define-key map (kbd "M-j") 'backward-word)
-	(define-key map (kbd "M-l") 'forward-word)
-
-	;;move to end of *
-	(define-key map (kbd "C-u") 'move-beginning-of-line)
-	(define-key map (kbd "C-o") 'move-end-of-line)
-	(define-key map (kbd "M-u") 'beginning-of-buffer)
-	(define-key map (kbd "M-o") 'end-of-buffer)
-
-	;;expand region
-	(define-key map (kbd "C-e") 'er/expand-region)
-	(define-key map (kbd "C-r") 'er/contract-region)
-
-	;;deleting stuff
-	(define-key map (kbd "M-<DEL>") 'kill-line)
-
-	;;main keys
-	(define-key map (kbd "`") 'execute-extended-command)
-	  map)
-	"my-keys-minor-mode keymap.")
-
-	(define-minor-mode my-keys-minor-mode
-	:init-value t
-	:lighter " my-keys")
-	
-	(my-keys-minor-mode 1)
-
- #+END_SRC
 * registers
 #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
