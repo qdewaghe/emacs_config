@@ -278,8 +278,7 @@
     (setq ivy-use-virtual-buffers t)
     (setq ivy-display-style 'fancy))
 #+END_SRC
-* org_mode
-
+* org mode
 #+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window)
 
@@ -289,21 +288,22 @@
     (add-hook 'org-mode-hook (lambda ()
 			       (org-bullets-mode 1))))
 
-    (setq org-hide-emphasis-markers t)
-    (font-lock-add-keywords 'org-mode
-			    '(("^ +\\([-*]\\) "
-			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+			  '(("^ +\\([-*]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-    (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
-      (cond
-       ((org-export-derived-backend-p backend 'latex)
-	(replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
-       ((org-export-derived-backend-p backend 'html)
-	(replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
 
-    (eval-after-load 'ox '(add-to-list
-			   'org-export-filter-timestamp-functions
-			   'org-export-filter-timestamp-remove-brackets))
+  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
+    (cond
+     ((org-export-derived-backend-p backend 'latex)
+      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
+     ((org-export-derived-backend-p backend 'html)
+      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
+
+  (eval-after-load 'ox '(add-to-list
+			 'org-export-filter-timestamp-functions
+			 'org-export-filter-timestamp-remove-brackets))
 
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
 
@@ -312,12 +312,12 @@
   (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
   (require 'ox-reveal)
 
-    (setq org-time-stamp-custom-formats
-	  '("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
-    (setq org-reveal-mathjax t)
+  (setq org-time-stamp-custom-formats
+	'("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
+  (setq org-reveal-mathjax t)
 
-    (use-package htmlize
-      :ensure t)
+  (use-package htmlize
+    :ensure t)
 
   (setq org-src-window-setup 'current-window)
 
@@ -347,11 +347,28 @@
 
   (setq org-time-stamp-custom-formats
 	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
+
+  (add-to-list 'org-latex-packages-alist '("" "listingsutf8"))
+
+  (setq org-highlight-latex-and-related '(latex script entities))
+
+  (setq org-src-fontify-natively t)
+  (require 'ox-latex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+
+  (setq org-latex-pdf-process
+	'("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 #+END_SRC
 ** babel
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
- 'org-babel-load-languages '((C . t)))
+   'org-babel-load-languages
+   '((C . t)
+     (lua . t)
+  ))
 #+END_SRC
 * functions
 ** kill a whole word
@@ -484,36 +501,44 @@
   #+BEGIN_SRC emacs-lisp
     (setq c-default-style "bsd"
 	  c-basic-offset 3)
+
+    (use-package modern-cpp-font-lock
+      :ensure t
+      :hook (c++-mode . modern-c++-font-lock-mode))
+
   #+END_SRC
 * language server
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
        :ensure t)
+
+     (setq ccls-sem-highlight-method 'font-lock)
+     (ccls-use-default-rainbow-sem-highlight)
+
+     (with-eval-after-load 'projectile
+       (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
    #+END_SRC
-** eglot
+** lsp
   #+BEGIN_SRC emacs-lisp
-	(use-package eglot
-	  :ensure t
-	  :config
-	  (add-to-list 'eglot-server-programs '(c-mode "~/ccls/Release/ccls")))
+    (use-package lsp-mode :ensure t :commands lsp)
+    (use-package company-lsp :ensure t :commands company-lsp)
 
-	(defun projectile-project-find-function (dir)
-	  (let* ((root (projectile-project-root dir)))
-	  (and root (cons 'transient root))))
+    (use-package ccls
+      :hook ((c-mode c++-mode objc-mode) .
+	     (lambda () (require 'ccls) (lsp))))
 
-	(with-eval-after-load 'project
-	  (add-to-list 'project-find-functions 'projectile-project-find-function))
-
+    (setq ccls-executable "~/ccls/Release/ccls")
   #+END_SRC
+
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
+       :diminish ""
        :ensure t
-       :commands company-lsp
        :config
-       (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 3)
+       (setq company-idle-delay 0.3)
+       (setq company-minimum-prefix-length 1)
        (global-company-mode t))
 
      (with-eval-after-load 'company
@@ -521,18 +546,9 @@
        (define-key company-active-map (kbd "M-p") nil)
        (define-key company-active-map (kbd "H-i") 'company-select-previous)
        (define-key company-active-map (kbd "C-k") 'company-select-next))
-
-     (setq company-transformers nil)
-
-     (use-package company-lsp
-       :ensure t
-       :commands company-lsp
-       :init
+   
        (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-       :config
-       (push 'company-lsp company-backends))
    #+END_SRC
-
 * keybindings
   #+BEGIN_SRC emacs-lisp
     (defvar my-keys-minor-mode-map
@@ -556,11 +572,12 @@
 	(define-key map (kbd "C-c 0") 'delete-window)
 	(define-key map (kbd "C-c C-0") 'delete-window)
 	(define-key map (kbd "C-c o") 'switch-window)
+	(define-key map (kbd "C-c a") 'ff-find-other-file)
 
 	;;switch buffer
 	(define-key map (kbd "C-c b") 'ivy-switch-buffer)
 	(define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
-
+	
 	;;copy/cut paste	
 	(define-key map (kbd "C-c C-y") 'kill-ring-save)
 	(define-key map (kbd "C-c f") 'kill-region)
