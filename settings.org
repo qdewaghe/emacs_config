@@ -645,6 +645,7 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-v") (kbd "C-y"))
 	(define-key map (kbd "C-p") 'universal-argument)
 	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
+	(define-key map (kbd "C-c l") 'recenter)
 
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
