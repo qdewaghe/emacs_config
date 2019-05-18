@@ -51,6 +51,8 @@ projectile.cache
 key
 *pub
 
+*.last
+*.data
 settings.el
 recentf
 *.eld
@@ -62,6 +64,7 @@ recentf
 
 # irony
 
+cquery/
 transinet/
 irony/
 elpa/
