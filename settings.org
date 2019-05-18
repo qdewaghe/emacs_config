@@ -585,9 +585,11 @@ function is used as advice for `widen'."
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
-     :ensure t
+       :ensure t
        :hook ((c-mode c++-mode objc-mode) .
 	      (lambda () (require 'ccls) (lsp))))
+
+     (setq ccls-executable "~/ccls/Release/ccls")
 
      (setq ccls-sem-highlight-method 'font-lock)
      (ccls-use-default-rainbow-sem-highlight)
