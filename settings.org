@@ -604,26 +604,10 @@ function is used as advice for `widen'."
        :ensure t
        :after projectile
        :init
-       (defvar +ccls-path-mappings [])
-       (defvar +ccls-initial-blacklist [])
        (setq ccls-executable "~/ccls/Release/ccls")
        (setq ccls-sem-highlight-method 'font-lock)
        (with-eval-after-load 'projectile
 	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
-       (defun ccls/callee ()
-	 (interactive)
-	 (lsp-ui-peek-find-custom "$ccls/call" '(:callee t)))
-       (defun ccls/caller ()
-	 (interactive)
-	 (lsp-ui-peek-find-custom "$ccls/call"))
-       (defun ccls/vars (kind)
-	 (lsp-ui-peek-find-custom "$ccls/vars" `(:kind ,kind)))
-       (defun ccls/base (levels)
-	 (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels)))
-       (defun ccls/derived (levels)
-	 (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels :derived t)))
-       (defun ccls/member (kind)
-	 (lsp-ui-peek-find-custom "$ccls/member" `(:kind ,kind)))
        (setq lsp-prefer-flymake nil)
        (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
        :custom (projectile-project-root-files-top-down-recurring

@@ -58,6 +58,10 @@ recentf
 *.md
 *.lsp-session-v1
 *.directory
+*.lsp-session1
 
 # irony
+
+transinet/
 irony/
+elpa/
