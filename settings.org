@@ -58,7 +58,7 @@
   #+END_SRC
 ** default zoom 
    #+BEGIN_SRC emacs-lisp
-   (set-face-attribute 'default nil :height 175)
+   (set-face-attribute 'default nil :height 135)
    #+END_SRC
 ** camelCaseNavigation
    #+BEGIN_SRC emacs-lisp
@@ -505,15 +505,75 @@
   (global-set-key (kbd "C-c c") 'move-text-up)
   (global-set-key (kbd "C-c t") 'move-text-down)
 #+END_SRC
+** narrowing
+#+BEGIN_SRC emacs-lisp
+(defvar-local narrow-reindent--point-min 0)
+(defvar-local narrow-reindent--point-max 0)
+(defvar-local narrow-reindent--indent-amount 0)
+
+(define-minor-mode narrow-reindent-mode
+  "Toggle Narrow-Reindent mode.
+When Narrow-Reindent mode is active, after narrowing the buffer
+is re-indented. After widening, this narrowed region is
+re-indented again. This mode uses the `indent-region' to perform
+indentation."
+  :lighter " NaRe"
+  :group 'narrow-reindent
+  :init-value nil
+  ;; Advice is inherently global. Did not know that during first writing. There
+  ;; are no narrow hooks. Not super sure about this method now. Regardless, it
+  ;; works.
+  (advice-add #'narrow-to-defun :after #'narrow-reindent--after-narrow)
+  (advice-add #'narrow-to-page :after #'narrow-reindent--after-narrow)
+  (advice-add #'narrow-to-region :after #'narrow-reindent--after-narrow)
+  (advice-add #'widen :before #'narrow-reindent--before-widen))
+
+(defmacro without-undo (&rest forms)
+  "Executes FORMS with a temporary buffer-undo-list that is discarded afterwards.
+Taken from http://www.emacswiki.org/emacs/UndoCommands with some
+modifications."
+`(let* ((buffer-undo-list)
+          (modified (buffer-modified-p))
+          (inhibit-read-only t))
+   (unwind-protect
+       (progn ,@forms)
+     (set-buffer-modified-p modified)) ()))
+
+(defun narrow-reindent--after-narrow (&rest _r)
+  "Indent narrowed buffer. This function is used as advice for
+`narrow-to-defun' and friends."
+  (when narrow-reindent-mode
+    (let ((beg (point-min))
+          (end (point-max)))
+      (setq narrow-reindent--point-min beg)
+      (setq narrow-reindent--point-max end)
+      (setq narrow-reindent--indent-amount (indent-rigidly--current-indentation beg end))
+      (without-undo
+       (indent-rigidly beg end (- narrow-reindent--indent-amount))))))
+
+(defun narrow-reindent--before-widen (&rest _r)
+  "Indent the region that the buffer was narrowed to. This
+function is used as advice for `widen'."
+  (when narrow-reindent-mode
+    (without-undo
+     (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
+
+(provide 'narrow-reindent)
+#+END_SRC
 * languages
   #+BEGIN_SRC emacs-lisp
-    (setq c-default-style "bsd"
-	  c-basic-offset 3)
 
+    (use-package clang-format
+      :ensure t
+      :commands clang-format clang-format-buffer clang-format-region)
+
+      (fset 'c++-indent-region 'clang-format-region)
 
     (use-package modern-cpp-font-lock
       :ensure t
       :hook (c++-mode . modern-c++-font-lock-mode))
+
+      
 
 
     (add-hook 'lua-mode-hook 
@@ -531,21 +591,18 @@
      (setq ccls-sem-highlight-method 'font-lock)
      (ccls-use-default-rainbow-sem-highlight)
 
-
      (setq lsp-prefer-flymake nil)
-
      (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+
      (with-eval-after-load 'projectile
        (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
-     (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
-     (ccls-use-default-rainbow-sem-highlight)
    #+END_SRC
 ** lsp
   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode :ensure t :commands lsp)
+    (use-package lsp-ui :ensure t :commands lsp-ui)
     (use-package company-lsp :ensure t :commands company-lsp)
   #+END_SRC
-
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
@@ -574,6 +631,7 @@
 	(define-key map (kbd "C-c r j") 'jump-to-register)
 	(define-key map (kbd "C-v") (kbd "C-y"))
 	(define-key map (kbd "C-p") 'universal-argument)
+	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
 
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
@@ -584,15 +642,25 @@
 	;;window with two versions so it works even if I press the number too fast
 	(define-key map (kbd "C-c 1") 'delete-other-windows)
 	(define-key map (kbd "C-c C-1") 'delete-other-windows)
+
 	(define-key map (kbd "C-c 0") 'delete-window)
 	(define-key map (kbd "C-c C-0") 'delete-window)
+
 	(define-key map (kbd "C-c o") 'switch-window)
 	(define-key map (kbd "C-c a") 'ff-find-other-file)
+	(define-key map (kbd "C-c e") 'other-frame)
+
+	;;frames
+	(define-key map (kbd "C-c 4 1") 'delete-other-frames)
+	(define-key map (kbd "C-c 4 0") 'delete-frame)
+	(define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
+	(define-key map (kbd "C-c 4 2") 'find-file-other-frame)
+	(define-key map (kbd "C-c 4 3") 'find-file-other-frame)
 
 	;;switch buffer
 	(define-key map (kbd "C-c b") 'ivy-switch-buffer)
 	(define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
-	
+
 	;;copy/cut paste	
 	(define-key map (kbd "C-c C-y") 'kill-ring-save)
 	(define-key map (kbd "C-c f") 'kill-region)
