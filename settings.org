@@ -585,6 +585,7 @@ function is used as advice for `widen'."
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
+     :ensure t
        :hook ((c-mode c++-mode objc-mode) .
 	      (lambda () (require 'ccls) (lsp))))
 
