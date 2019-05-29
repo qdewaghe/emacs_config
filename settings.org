@@ -287,89 +287,6 @@
     (setq ivy-display-style 'fancy))
 #+END_SRC
 * org mode
-#+BEGIN_SRC emacs-lisp
-  (setq org-src-window-setup 'current-window)
-
-
-  (use-package org-bullets
-    :ensure t
-    :init
-    (add-hook 'org-mode-hook (lambda ()
-			       (org-bullets-mode 1))))
-
-  (setq org-hide-emphasis-markers t)
-  (font-lock-add-keywords 'org-mode
-			  '(("^ +\\([-*]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
-    (cond
-     ((org-export-derived-backend-p backend 'latex)
-      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
-     ((org-export-derived-backend-p backend 'html)
-      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
-
-  (eval-after-load 'ox '(add-to-list
-			 'org-export-filter-timestamp-functions
-			 'org-export-filter-timestamp-remove-brackets))
-
-  (add-to-list 'load-path (expand-file-name "~/.emacs.d/reveal.js/"))
-
-  (setq-default org-display-custom-times t)
-
-  (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
-  (require 'ox-reveal)
-
-  (setq org-time-stamp-custom-formats
-	'("<%d %b %Y>" . "<%d/%m/%y %H:%M>"))
-  (setq org-reveal-mathjax t)
-
-  (use-package htmlize
-    :ensure t)
-
-  (setq org-src-window-setup 'current-window)
-
-  (use-package org-bullets
-    :ensure t
-    :init
-    (add-hook 'org-mode-hook (lambda ()
-			       (org-bullets-mode 1))))
-
-  (setq org-hide-emphasis-markers t)
-  (font-lock-add-keywords 'org-mode
-			  '(("^ +\\([-*]\\) "
-			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
-    (cond
-     ((org-export-derived-backend-p backend 'latex)
-      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
-     ((org-export-derived-backend-p backend 'html)
-      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
-
-  (eval-after-load 'ox '(add-to-list
-			 'org-export-filter-timestamp-functions
-			 'org-export-filter-timestamp-remove-brackets))
-
-  (setq-default org-display-custom-times t)
-
-  (setq org-time-stamp-custom-formats
-	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
-
-
-
-  (require 'org)
-  (require 'ox-latex)
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
-  (setq org-latex-listings 'minted) 
-  (setq org-src-fontify-natively t)
-
-  (setq org-latex-pdf-process
-	'("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-	  "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-#+END_SRC
 ** babel
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
@@ -377,6 +294,66 @@
    '((C . t)
      (lua . t)
   ))
+#+END_SRC
+** org bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda ()
+			       (org-bullets-mode 1))))
+
+  (setq org-hide-emphasis-markers t)
+  (font-lock-add-keywords 'org-mode
+			  '(("^ +\\([-*]\\) "
+			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+#+END_SRC
+** timestamp export
+#+BEGIN_SRC emacs-lisp
+  (setq org-time-stamp-custom-formats
+	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
+
+
+
+  (defun org-export-filter-timestamp-remove-brackets (timestamp backend info)
+    (cond
+     ((org-export-derived-backend-p backend 'latex)
+      (replace-regexp-in-string "[<>]\\|[][]" "" timestamp))
+     ((org-export-derived-backend-p backend 'html)
+      (replace-regexp-in-string "&[lg]t;\\|[][]" "" timestamp))))
+
+  (eval-after-load 'ox '(add-to-list
+			 'org-export-filter-timestamp-functions
+			 'org-export-filter-timestamp-remove-brackets))
+
+  (setq-default org-display-custom-times t)
+#+END_SRC
+** latex export
+   #+BEGIN_SRC emacs-lisp
+     (require 'org)
+     (require 'ox-latex)
+     (add-to-list 'org-latex-packages-alist '("" "minted"))
+     (setq org-latex-listings 'minted) 
+     (setq org-src-fontify-natively t)
+
+     (setq org-latex-pdf-process
+	   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+   #+END_SRC
+** reveal js
+#+BEGIN_SRC emacs-lisp
+  (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
+
+  (use-package ox-reveal
+    :ensure t)
+
+  (use-package htmlize
+    :ensure t)
+
+  (setq org-reveal-mathjax t)
+
+  (setq org-src-window-setup 'current-window)
 #+END_SRC
 * functions
 ** kill a whole word
@@ -590,8 +567,23 @@ function is used as advice for `widen'."
       :hook (prog-mode . lsp))
 
     (use-package lsp-ui
-      :ensure t
-      :commands lsp-ui)
+     :custom-face
+     (lsp-ui-doc-background ((t (:background nil))))
+     (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+     :init (setq lsp-ui-doc-enable t
+                 lsp-ui-doc-header t
+                 lsp-ui-doc-include-signature t
+                 lsp-ui-doc-position 'top
+                 lsp-ui-doc-use-webkit t
+                 lsp-ui-doc-border (face-foreground 'default)
+
+                 lsp-ui-sideline-enable nil
+                 lsp-ui-sideline-ignore-duplicate t)
+     :config
+     ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+     ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+     (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+       (setq mode-line-format nil)))
 
     (use-package company-lsp 
       :ensure t
@@ -724,4 +716,3 @@ function is used as advice for `widen'."
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
 #+END_SRC
-
