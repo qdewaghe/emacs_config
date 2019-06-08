@@ -34,7 +34,6 @@
    #+BEGIN_SRC emacs-lisp
    (defalias 'yes-or-no-p 'y-or-n-p)
    (defvar my-term-shell "/bin/bash")
-   (global-set-key (kbd "<s-return>") 'shell)
     #+END_SRC
 ** scrolling
    #+BEGIN_SRC emacs-lisp
@@ -286,17 +285,17 @@
     (setq ivy-use-virtual-buffers t)
     (setq ivy-display-style 'fancy))
 #+END_SRC
-* org mode
+* org-mode
 ** babel
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
      (lua . t)
   ))
-#+END_SRC
+   #+END_SRC
 ** org bullets
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
     :ensure t
     :init
@@ -307,9 +306,9 @@
   (font-lock-add-keywords 'org-mode
 			  '(("^ +\\([-*]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-#+END_SRC
+   #+END_SRC
 ** timestamp export
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq org-time-stamp-custom-formats
 	'("<%d/%m/%y>" . "<%d/%m/%y %H:%M:%S>"))
 
@@ -327,7 +326,7 @@
 			 'org-export-filter-timestamp-remove-brackets))
 
   (setq-default org-display-custom-times t)
-#+END_SRC
+   #+END_SRC
 ** latex export
    #+BEGIN_SRC emacs-lisp
      (require 'org)
@@ -342,7 +341,7 @@
 	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
    #+END_SRC
 ** reveal js
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
 
   (use-package ox-reveal
@@ -354,27 +353,31 @@
   (setq org-reveal-mathjax t)
 
   (setq org-src-window-setup 'current-window)
-#+END_SRC
+   #+END_SRC
+** prevent edits
+   #+BEGIN_SRC emacs-lisp
+     (setq-default org-catch-invisible-edits 'show-and-error)
+   #+END_SRC
 * functions
 ** kill a whole word
-  #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     (defun kill-whole-word()
       (interactive)
       (backward-word)
       (kill-word 1))
     (global-set-key (kbd "C-c w w") 'kill-whole-word)
-    #+END_SRC
+   #+END_SRC
 ** reload
-    #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     ;;f has to be lowercase btw
       (defun config-reload()
 	(interactive)
 	(org-babel-load-file (expand-file-name "~/.emacs.d/settings.org")))
       (global-set-key (kbd "<f5>") 'config-reload)
-    #+END_SRC
+   #+END_SRC
 ** window
 *** split horizontally 
-      #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 	(defun split-and-follow-horizontally ()
 	  (interactive)
 	  (split-window-below)
@@ -384,9 +387,9 @@
 	(global-set-key (kbd "C-c 2") 'split-and-follow-horizontally)
 	(global-set-key (kbd "C-c C-2") 'split-and-follow-horizontally)
 	
-      #+END_SRC
+    #+END_SRC
 *** split vertically
-      #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 	(defun split-and-follow-vertically ()
 	    (interactive)
 	    (split-window-right)
@@ -395,9 +398,9 @@
 	    ;;two versions so it works anyway if I press 3 too fast
 	(global-set-key (kbd "C-c 3") 'split-and-follow-vertically)
 	(global-set-key (kbd "C-c C-3") 'split-and-follow-vertically)
-      #+END_SRC
+    #+END_SRC
 ** duplicate line
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
  (defun duplicate-line ()
    (interactive)
    (let ((col (current-column)))
@@ -410,9 +413,9 @@
 
  (global-set-key (kbd "C-c h") 'duplicate-line)
 
-#+END_SRC
+   #+END_SRC
 ** move line
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (defun move-text-internal (arg)
      (cond
       ((and mark-active transient-mark-mode)
@@ -481,9 +484,9 @@
 
   (global-set-key (kbd "C-c c") 'move-text-up)
   (global-set-key (kbd "C-c t") 'move-text-down)
-#+END_SRC
+   #+END_SRC
 ** narrowing
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (defvar-local narrow-reindent--point-min 0)
 (defvar-local narrow-reindent--point-max 0)
 (defvar-local narrow-reindent--indent-amount 0)
@@ -536,10 +539,9 @@ function is used as advice for `widen'."
      (indent-rigidly narrow-reindent--point-min narrow-reindent--point-max narrow-reindent--indent-amount))))
 
 (provide 'narrow-reindent)
-#+END_SRC
+   #+END_SRC
 * languages
   #+BEGIN_SRC emacs-lisp
-
     (use-package clang-format
       :ensure t
       :commands clang-format clang-format-buffer clang-format-region)
@@ -550,17 +552,13 @@ function is used as advice for `widen'."
       :ensure t
       :hook (c++-mode . modern-c++-font-lock-mode))
 
-      
-
-
     (add-hook 'lua-mode-hook 
 	      (lambda () (unless (fboundp 'lua-calculate-indentation-right-shift-next)
 			   (load-file (locate-file "my-lua.el" load-path)))))
-
   #+END_SRC
 * language server
 ** lsp
-  #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode 
       :ensure t
       :commands lsp
@@ -589,7 +587,7 @@ function is used as advice for `widen'."
       :ensure t
       :commands company-lsp
       :config (push 'company-lsp company-backends))
-  #+END_SRC
+   #+END_SRC
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
@@ -615,7 +613,7 @@ function is used as advice for `widen'."
        :ensure t
        :config
        (setq company-idle-delay 0.3)
-       (setq company-minimum-prefix-length 1)
+       (setq company-minimum-prefix-length 2)
        (global-company-mode t))
 
      (with-eval-after-load 'company
@@ -638,11 +636,10 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-p") 'universal-argument)
 	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
 	(define-key map (kbd "C-c l") 'recenter)
-
+	(define-key map (kbd "M-SPC") 'cycle-spacing)
+	(define-key map (kbd "M-<return>") 'shell)
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
-	
-	;;my way of avoiding emacs' pinky (caps lock is rebinded to backspace already)
 	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
 
 	;;window with two versions so it works even if I press the number too fast
@@ -653,7 +650,9 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-c C-0") 'delete-window)
 
 	(define-key map (kbd "C-c o") 'switch-window)
+	(define-key map (kbd "C-c C-o") 'switch-window)
 	(define-key map (kbd "C-c a") 'ff-find-other-file)
+	(define-key map (kbd "C-c C-e") 'other-frame)
 	(define-key map (kbd "C-c e") 'other-frame)
 
 	;;frames
@@ -710,9 +709,9 @@ function is used as advice for `widen'."
 	
 	(my-keys-minor-mode 1)
 
- #+END_SRC
+  #+END_SRC
 * registers
-#+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
   (set-register ?n(cons 'file "~/Dropbox/notes/todo.org"))
-#+END_SRC
+  #+END_SRC
