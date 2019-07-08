@@ -100,6 +100,11 @@
 #+BEGIN_SRC emacs-lisp
 (setq undo-tree-visualizer-timestamps t)
 #+END_SRC
+** always ensure
+#+BEGIN_SRC emacs-lisp
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+#+END_SRC
 * packages
 ** diminish
   #+BEGIN_SRC emacs-lisp
@@ -265,6 +270,15 @@
   (use-package speed-type
     :ensure t)
 
+#+END_SRC
+** auto-update
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :ensure t
+    :config
+    (setq auto-package-update-delete-old-versions t)
+    (setq auto-package-update-hide-results t)
+    (auto-package-update-maybe))
 #+END_SRC
 * theme
 #+BEGIN_SRC emacs-lisp
