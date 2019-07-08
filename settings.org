@@ -646,6 +646,9 @@ function is used as advice for `widen'."
    #+END_SRC
 * keybindings
   #+BEGIN_SRC emacs-lisp
+
+  (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
+
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
@@ -729,6 +732,7 @@ function is used as advice for `widen'."
 	(my-keys-minor-mode 1)
 
  #+END_SRC
+
 * registers
 #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
