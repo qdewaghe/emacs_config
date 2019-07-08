@@ -3,7 +3,7 @@
   (require 'package)
   (setq package-enable-at-startup nil)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                     ("melpa" . "http://melpa.org/packages/")))
+		     ("melpa" . "http://melpa.org/packages/")))
 
   (package-initialize)
 
@@ -260,12 +260,18 @@
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 #+END_SRC
+** typing
+#+BEGIN_SRC emacs-lisp
+  (use-package speed-type
+    :ensure t)
+
+#+END_SRC
 * theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
     :config
-    (load-theme 'doom-one t))
+    (load-theme 'doom-vibrant t))
 #+END_SRC
 * ido counsel ivy
 #+BEGIN_SRC emacs-lisp
@@ -550,9 +556,6 @@ function is used as advice for `widen'."
       :ensure t
       :hook (c++-mode . modern-c++-font-lock-mode))
 
-      
-
-
     (add-hook 'lua-mode-hook 
 	      (lambda () (unless (fboundp 'lua-calculate-indentation-right-shift-next)
 			   (load-file (locate-file "my-lua.el" load-path)))))
@@ -567,23 +570,24 @@ function is used as advice for `widen'."
       :hook (prog-mode . lsp))
 
     (use-package lsp-ui
-     :custom-face
-     (lsp-ui-doc-background ((t (:background nil))))
-     (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-     :init (setq lsp-ui-doc-enable t
-                 lsp-ui-doc-header t
-                 lsp-ui-doc-include-signature t
-                 lsp-ui-doc-position 'top
-                 lsp-ui-doc-use-webkit t
-                 lsp-ui-doc-border (face-foreground 'default)
+      :ensure t
+      :custom-face
+      (lsp-ui-doc-background ((t (:background nil))))
+      (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+      :init (setq lsp-ui-doc-enable t
+		  lsp-ui-doc-header t
+		  lsp-ui-doc-include-signature t
+		  lsp-ui-doc-position 'top
+		  lsp-ui-doc-use-webkit t
+		  lsp-ui-doc-border (face-foreground 'default)
 
-                 lsp-ui-sideline-enable nil
-                 lsp-ui-sideline-ignore-duplicate t)
-     :config
-     ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-     ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-     (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-       (setq mode-line-format nil)))
+		  lsp-ui-sideline-enable nil
+		  lsp-ui-sideline-ignore-duplicate t)
+      :config
+      ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+      ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+      (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+	(setq mode-line-format nil)))
 
     (use-package company-lsp 
       :ensure t
@@ -596,7 +600,7 @@ function is used as advice for `widen'."
        :ensure t
        :after projectile
        :init
-       (setq ccls-executable "~/ccls/Release/ccls")
+       (setq ccls-executable "~/code/ccls/Release/ccls")
        (setq ccls-sem-highlight-method 'font-lock)
        (with-eval-after-load 'projectile
 	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
@@ -615,7 +619,7 @@ function is used as advice for `widen'."
        :ensure t
        :config
        (setq company-idle-delay 0.3)
-       (setq company-minimum-prefix-length 1)
+       (setq company-minimum-prefix-length 3)
        (global-company-mode t))
 
      (with-eval-after-load 'company

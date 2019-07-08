@@ -7,6 +7,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("43c808b039893c885bdeec885b4f7572141bd9392da7f0bd8d8346e02b2ec8da" default)))
  '(package-selected-packages
    (quote
     (clang-format yasnippet which-key use-package try switch-window spaceline rainbow-delimiters org-bullets modern-cpp-font-lock magit-popup magit lua-mode lsp-ui hungry-delete htmlize expand-region eglot doom-themes diminish dashboard cquery counsel company-lsp ccls beacon avy))))

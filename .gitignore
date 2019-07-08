@@ -21,6 +21,7 @@ tramp
 
 # elpa packages
 /elpa/
+/speed-type/
 
 # reftex files
 *.rel
