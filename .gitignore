@@ -6,6 +6,7 @@
 *.elc
 auto-save-list
 tramp
+.last-package-update-day
 .\#*
 
 # Org-mode
@@ -21,6 +22,7 @@ tramp
 
 # elpa packages
 /elpa/
+/speed-type/
 
 # reftex files
 *.rel
@@ -61,7 +63,6 @@ recentf
 *.lsp-session-v1
 *.directory
 *.lsp-session1
-
 # irony
 
 cquery/

@@ -3,7 +3,7 @@
   (require 'package)
   (setq package-enable-at-startup nil)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                     ("melpa" . "http://melpa.org/packages/")))
+		     ("melpa" . "http://melpa.org/packages/")))
 
   (package-initialize)
 
@@ -103,6 +103,19 @@
 ** undo tree
 #+BEGIN_SRC emacs-lisp
 (setq undo-tree-visualizer-timestamps t)
+#+END_SRC
+** always ensure
+#+BEGIN_SRC emacs-lisp
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+#+END_SRC
+** utf-8
+#+BEGIN_SRC emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 #+END_SRC
 * packages
 ** diminish
@@ -264,11 +277,27 @@
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
   (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 #+END_SRC
+** typing
+#+BEGIN_SRC emacs-lisp
+  (use-package speed-type
+    :ensure t)
+
+#+END_SRC
+** auto-update
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :ensure t
+    :config
+    (setq auto-package-update-delete-old-versions t)
+    (setq auto-package-update-hide-results t)
+    (auto-package-update-maybe))
+#+END_SRC
 * theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
-    :config(load-theme 'doom-one t))
+    :config
+    (load-theme 'doom-vibrant t))
 #+END_SRC
 
 * ido counsel ivy
@@ -571,23 +600,24 @@ function is used as advice for `widen'."
       :hook (prog-mode . lsp))
 
     (use-package lsp-ui
-     :custom-face
-     (lsp-ui-doc-background ((t (:background nil))))
-     (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-     :init (setq lsp-ui-doc-enable t
-                 lsp-ui-doc-header t
-                 lsp-ui-doc-include-signature t
-                 lsp-ui-doc-position 'top
-                 lsp-ui-doc-use-webkit t
-                 lsp-ui-doc-border (face-foreground 'default)
+      :ensure t
+      :custom-face
+      (lsp-ui-doc-background ((t (:background nil))))
+      (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+      :init (setq lsp-ui-doc-enable t
+		  lsp-ui-doc-header t
+		  lsp-ui-doc-include-signature t
+		  lsp-ui-doc-position 'top
+		  lsp-ui-doc-use-webkit t
+		  lsp-ui-doc-border (face-foreground 'default)
 
-                 lsp-ui-sideline-enable nil
-                 lsp-ui-sideline-ignore-duplicate t)
-     :config
-     ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-     ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-     (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-       (setq mode-line-format nil)))
+		  lsp-ui-sideline-enable nil
+		  lsp-ui-sideline-ignore-duplicate t)
+      :config
+      ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+      ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+      (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+	(setq mode-line-format nil)))
 
     (use-package company-lsp 
       :ensure t
@@ -600,7 +630,7 @@ function is used as advice for `widen'."
        :ensure t
        :after projectile
        :init
-       (setq ccls-executable "~/ccls/Release/ccls")
+       (setq ccls-executable "~/code/ccls/Release/ccls")
        (setq ccls-sem-highlight-method 'font-lock)
        (with-eval-after-load 'projectile
 	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
@@ -632,6 +662,9 @@ function is used as advice for `widen'."
    #+END_SRC
 * keybindings
   #+BEGIN_SRC emacs-lisp
+
+  (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
+
     (defvar my-keys-minor-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "C-z") 'undo)
@@ -641,9 +674,13 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-v") (kbd "C-y"))
 	(define-key map (kbd "C-c l") 'universal-argument)
 	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
+
 	(define-key map (kbd "C-p") 'recenter-top-bottom)
-	(define-key map (kbd "M-SPC") 'cycle-spacing)
 	(define-key map (kbd "<C-return>") 'eshell)
+
+	(define-key map (kbd "C-c l") 'recenter)
+	(define-key map (kbd "C-`") (insert "`"))
+
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
@@ -724,7 +761,9 @@ function is used as advice for `widen'."
 
     (my-keys-minor-mode 1)
 
-  #+END_SRC
+ #+END_SRC
+
+
 * registers
   #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
