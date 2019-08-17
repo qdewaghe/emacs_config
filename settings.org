@@ -32,8 +32,13 @@
    #+END_SRC
 ** terminal
    #+BEGIN_SRC emacs-lisp
-   (defalias 'yes-or-no-p 'y-or-n-p)
-   (defvar my-term-shell "/bin/bash")
+     (defalias 'yes-or-no-p 'y-or-n-p)
+     (defvar my-term-shell "/bin/bash")
+
+     (defun eshell/clear ()
+       (interactive)
+       (let ((comint-buffer-maximum-size 0))
+	 (comint-truncate-buffer)))
     #+END_SRC
 ** scrolling
    #+BEGIN_SRC emacs-lisp
@@ -263,9 +268,9 @@
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
-    :config
-    (load-theme 'doom-one t))
+    :config(load-theme 'doom-one t))
 #+END_SRC
+
 * ido counsel ivy
 #+BEGIN_SRC emacs-lisp
   (setq indo-enable-flex-matching t)
@@ -342,18 +347,22 @@
    #+END_SRC
 ** reveal js
    #+BEGIN_SRC emacs-lisp
-  (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
+     (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
 
-  (use-package ox-reveal
-    :ensure t)
+     (use-package ox-reveal
+       :ensure t)
 
-  (use-package htmlize
-    :ensure t)
+     (use-package htmlize
+       :ensure t
+       :config
+       (setq org-html-htmlize-output-type 'css)
+       (setq org-html-htmlize-font-prefix "org-"))
 
-  (setq org-reveal-mathjax t)
+     (setq org-reveal-mathjax t)
 
-  (setq org-src-window-setup 'current-window)
+     (setq org-src-window-setup 'current-window)
    #+END_SRC
+
 ** prevent edits
    #+BEGIN_SRC emacs-lisp
      (setq-default org-catch-invisible-edits 'show-and-error)
@@ -383,9 +392,6 @@
 	  (split-window-below)
 	  (balance-windows)
 	  (other-window 1))
-	  ;;two versions so it works anyway if I press 2 too fast
-	(global-set-key (kbd "C-c 2") 'split-and-follow-horizontally)
-	(global-set-key (kbd "C-c C-2") 'split-and-follow-horizontally)
 	
     #+END_SRC
 *** split vertically
@@ -633,11 +639,11 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-c C-f") 'counsel-find-file)
 	(define-key map (kbd "C-c r j") 'jump-to-register)
 	(define-key map (kbd "C-v") (kbd "C-y"))
-	(define-key map (kbd "C-p") 'universal-argument)
+	(define-key map (kbd "C-c l") 'universal-argument)
 	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
-	(define-key map (kbd "C-c l") 'recenter)
+	(define-key map (kbd "C-p") 'recenter-top-bottom)
 	(define-key map (kbd "M-SPC") 'cycle-spacing)
-	(define-key map (kbd "M-<return>") 'shell)
+	(define-key map (kbd "<C-return>") 'eshell)
 	;;Tab = C-i thing
 	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
@@ -649,12 +655,18 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-c 0") 'delete-window)
 	(define-key map (kbd "C-c C-0") 'delete-window)
 
+	;;switching frame and stuff
 	(define-key map (kbd "C-c o") 'switch-window)
 	(define-key map (kbd "C-c C-o") 'switch-window)
 	(define-key map (kbd "C-c a") 'ff-find-other-file)
-	(define-key map (kbd "C-c C-e") 'other-frame)
 	(define-key map (kbd "C-c e") 'other-frame)
 
+	;;balancing horizontally
+	(define-key map (kbd "C-,") 'enlarge-window-horizontally)
+	(define-key map (kbd "C-.") 'shrink-window-horizontally)
+	(define-key map (kbd "C-/") 'balance-windows)
+
+	
 	;;frames
 	(define-key map (kbd "C-c 4 1") 'delete-other-frames)
 	(define-key map (kbd "C-c 4 0") 'delete-frame)
@@ -669,7 +681,7 @@ function is used as advice for `widen'."
 	;;copy/cut paste	
 	(define-key map (kbd "C-c C-y") 'kill-ring-save)
 	(define-key map (kbd "C-c f") 'kill-region)
-	
+
 	;;mark
 	(define-key map (kbd "<C-tab>") 'set-mark-command)
 
@@ -698,16 +710,19 @@ function is used as advice for `widen'."
 	;;deleting stuff
 	(define-key map (kbd "M-<DEL>") 'kill-line)
 
+	(define-key map (kbd "C-c 2") 'split-and-follow-horizontally)
+	(define-key map (kbd "C-c C-2") 'split-and-follow-horizontally)
+
 	;;main keys
 	(define-key map (kbd "`") 'execute-extended-command)
-	  map)
-	"my-keys-minor-mode keymap.")
+	map)
+      "my-keys-minor-mode keymap.")
 
-	(define-minor-mode my-keys-minor-mode
-	:init-value t
-	:lighter " my-keys")
-	
-	(my-keys-minor-mode 1)
+    (define-minor-mode my-keys-minor-mode
+      :init-value t
+      :lighter " my-keys")
+
+    (my-keys-minor-mode 1)
 
   #+END_SRC
 * registers
