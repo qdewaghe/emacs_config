@@ -365,15 +365,20 @@
    #+BEGIN_SRC emacs-lisp
      (require 'org)
      (require 'ox-latex)
+     (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+(let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+  (plist-put dvipng--plist :use-xcolor t)
+  (plist-put dvipng--plist :image-converter '("dvipng -D %D -T tight -o %O %f")))
      (add-to-list 'org-latex-packages-alist '("" "minted"))
      (setq org-latex-listings 'minted) 
      (setq org-src-fontify-natively t)
-
+     (add-to-list 'org-latex-packages-alist '("" "listingsutf8"))
      (setq org-latex-pdf-process
 	   '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 	     "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
    #+END_SRC
+
 ** reveal js
    #+BEGIN_SRC emacs-lisp
      (setq org-reveal-root (expand-file-name "~/.emacs.d/reveal.js/"))
@@ -575,6 +580,16 @@ function is used as advice for `widen'."
 
 (provide 'narrow-reindent)
    #+END_SRC
+* Cmake
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cmake-ide
+    :ensure t)
+
+  (use-package cmake-mode
+    :ensure t)
+#+END_SRC
+
 * languages
   #+BEGIN_SRC emacs-lisp
     (use-package clang-format
@@ -762,8 +777,6 @@ function is used as advice for `widen'."
     (my-keys-minor-mode 1)
 
  #+END_SRC
-
-
 * registers
   #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
