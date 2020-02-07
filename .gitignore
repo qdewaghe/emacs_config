@@ -23,6 +23,7 @@ tramp
 # elpa packages
 /elpa/
 /speed-type/
+url/
 
 # reftex files
 *.rel
