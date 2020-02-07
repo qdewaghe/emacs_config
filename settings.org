@@ -1,9 +1,11 @@
 * repositories
 #+BEGIN_SRC emacs-lisp
   (require 'package)
-  (setq package-enable-at-startup nil)
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-		     ("melpa" . "http://melpa.org/packages/")))
+			 ("marmalade" . "https://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.org/packages/")))
+
+
 
   (package-initialize)
 
@@ -612,11 +614,12 @@ function is used as advice for `widen'."
    #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode 
       :ensure t
+      :init
       :commands lsp
       :hook (prog-mode . lsp))
 
+(use-package lsp-ui :commands lsp-ui-mode)
     (use-package lsp-ui
-      :ensure t
       :custom-face
       (lsp-ui-doc-background ((t (:background nil))))
       (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
@@ -644,7 +647,6 @@ function is used as advice for `widen'."
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
-       :ensure t
        :after projectile
        :init
        (setq ccls-executable "~/code/ccls/Release/ccls")
