@@ -325,6 +325,7 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
+     (python . t)
      (lua . t)
   ))
    #+END_SRC
@@ -639,6 +640,7 @@ function is used as advice for `widen'."
       :commands company-lsp
       :config (push 'company-lsp company-backends))
    #+END_SRC
+
 ** ccls
    #+BEGIN_SRC emacs-lisp
      (use-package ccls
@@ -657,6 +659,7 @@ function is used as advice for `widen'."
        :hook ((c-mode c++-mode objc-mode) .
 	      (lambda () (require 'ccls) (lsp))))
    #+END_SRC
+
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
@@ -690,8 +693,10 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-c l") 'universal-argument)
 	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
 
+	(define-key map (kbd "C-c n") 'org-toggle-latex-fragement)
+
 	(define-key map (kbd "C-p") 'recenter-top-bottom)
-	(define-key map (kbd "<C-return>") 'eshell)
+	(define-key map (kbd "<C-return>") 'lsp-find-definition)
 
 	(define-key map (kbd "C-c l") 'recenter)
 	(define-key map (kbd "C-`") (insert "`"))
@@ -760,7 +765,7 @@ function is used as advice for `widen'."
 	(define-key map (kbd "C-r") 'er/contract-region)
 
 	;;deleting stuff
-	(define-key map (kbd "M-<DEL>") 'kill-line)
+	;;(define-key map (kbd "M-<DEL>") 'kill-line)
 
 	(define-key map (kbd "C-c 2") 'split-and-follow-horizontally)
 	(define-key map (kbd "C-c C-2") 'split-and-follow-horizontally)
@@ -777,6 +782,7 @@ function is used as advice for `widen'."
     (my-keys-minor-mode 1)
 
  #+END_SRC
+
 * registers
   #+BEGIN_SRC emacs-lisp
   (set-register ?e(cons 'file "~/.emacs.d/settings.org"))
