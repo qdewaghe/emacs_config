@@ -160,13 +160,13 @@
   #+END_SRC
 ** projectile
   #+BEGIN_SRC emacs-lisp
-	(use-package projectile
-	  :ensure t
-	  :bind ("C-c p" . projectile-command-map)
-	  :config
-	  (projectile-global-mode)
-	  (setq projectile-enable-caching t)
-	  (setq projectile-completion-system 'ivy))      
+    (use-package projectile
+      :ensure t
+      :bind ("C-c p" . projectile-command-map)
+      :config
+      (projectile-global-mode)
+      (setq projectile-enable-caching t)
+      (setq projectile-completion-system 'ivy))      
 
   #+END_SRC
 ** search
@@ -586,11 +586,12 @@ function is used as advice for `widen'."
 * Cmake
 
 #+BEGIN_SRC emacs-lisp
-  (use-package cmake-ide
-    :ensure t)
-
   (use-package cmake-mode
-    :ensure t)
+    :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
+
+  (use-package cmake-font-lock
+    :after (cmake-mode)
+    :hook (cmake-mode . cmake-font-lock-activate))
 #+END_SRC
 
 * languages
@@ -652,7 +653,7 @@ function is used as advice for `widen'."
        (setq ccls-executable "~/code/ccls/Release/ccls")
        (setq ccls-sem-highlight-method 'font-lock)
        (with-eval-after-load 'projectile
-	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
+	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache/"))
        (setq lsp-prefer-flymake nil)
        (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
        :custom (projectile-project-root-files-top-down-recurring
