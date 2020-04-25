@@ -5,11 +5,6 @@
   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")))
-
-
- 
-
-
   (package-initialize)
 
   (unless (package-installed-p 'use-package)
@@ -659,6 +654,7 @@ function is used as advice for `widen'."
        :ensure t
        :init
        :commands lsp
+       :config (require 'lsp-clients)
        :hook (prog-mode . lsp))
 
      (setq gc-cons-threshold 100000000)
@@ -689,7 +685,8 @@ function is used as advice for `widen'."
      (use-package company-lsp 
        :ensure t
        :commands company-lsp
-       :config (push 'company-lsp company-backends)
+       :config 
+       (push 'company-lsp company-backends)
        (setq company-transformers nil
 	     company-lsp-async t
 	     company-lsp-cache-candidates nil))
@@ -715,9 +712,9 @@ function is used as advice for `widen'."
 
      (add-hook 'c++-mode
 	       (lambda ()
-		 (setq company-backends '(company-lsp))))
+	       (setq company-backends '(company-lsp))))
 
-     (setq ccls-sem-highlight-method 'font-lock)
+		 
    #+END_SRC
 
 * keybindings
@@ -818,6 +815,7 @@ function is used as advice for `widen'."
       "my-keys-minor-mode keymap.")
 
     (define-minor-mode my-keys-minor-mode
+      "my-keys-minor-mode keymap"
       :init-value t
       :lighter " my-keys")
 
