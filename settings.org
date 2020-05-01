@@ -1,12 +1,10 @@
 * repositories
 #+BEGIN_SRC emacs-lisp
   (require 'package)
-  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")))
-
-
-
+			 ("melpa" . "https://melpa.org/packages/")))
   (package-initialize)
 
   (unless (package-installed-p 'use-package)
@@ -600,20 +598,60 @@ function is used as advice for `widen'."
       :ensure t
       :commands clang-format clang-format-buffer clang-format-region)
 
-      (fset 'c++-indent-region 'clang-format-region)
+    (fset 'c++-indent-region 'clang-format-region)
 
     (use-package modern-cpp-font-lock
       :ensure t
       :hook (c++-mode . modern-c++-font-lock-mode))
 
+    (defun clang-format-save-hook-for-this-buffer ()
+      "Create a buffer local save hook."
+      (add-hook 'before-save-hook
+	(lambda ()
+	  (progn
+	    (when (locate-dominating-file "." ".clang-format")
+	      (clang-format-buffer))
+	    ;; Continue to save.
+	    nil))
+	nil
+	;; Buffer local hook.
+	t))
+
+    (add-hook 'c-mode-hook (lambda () (clang-format-save-hook-for-this-buffer))
+	      (add-hook 'c++-mode-hook (lambda () (clang-format-save-hook-for-this-buffer))))
+
     (add-hook 'lua-mode-hook 
 	      (lambda () (unless (fboundp 'lua-calculate-indentation-right-shift-next)
 			   (load-file (locate-file "my-lua.el" load-path)))))
+
   #+END_SRC
 * language server
+** company
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :diminish ""
+       :ensure t
+       :config
+       (setq company-transformers nil)
+       (setq company-lsp-cache-candidates nil)
+       (setq company-lsp-async t)
+       (setq company-lsp-enable-snippet t)
+       (setq company-lsp-enable-recompletion t)
+       (setq company-dabbrev-downcase 0)
+       (setq company-idle-delay 0)
+       (setq company-minimum-prefix-length 2)
+       (global-company-mode t))
+
+     (with-eval-after-load 'company
+       (define-key company-active-map (kbd "M-n") nil)
+       (define-key company-active-map (kbd "M-p") nil)
+       (define-key company-active-map (kbd "H-i") 'company-select-previous)
+       (define-key company-active-map (kbd "C-k") 'company-select-next))
+   #+END_SRC
 ** lsp
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode 
+<<<<<<< HEAD
 	   :ensure t
 	   :init
 	   :commands lsp
@@ -644,6 +682,48 @@ function is used as advice for `widen'."
 	   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
 	   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
 	     (setq mode-line-format nil)))
+=======
+       :ensure t
+       :init
+       :commands lsp
+       :config (require 'lsp-clients)
+       :hook (prog-mode . lsp))
+
+     (setq gc-cons-threshold 100000000)
+     (setq read-process-output-max (* 1024 1024)) ;; 1mb
+     (setq lsp-prefer-capf t)
+     (setq lsp-idle-delay 0.500)
+
+     (use-package lsp-ui :commands lsp-ui-mode)
+     (use-package lsp-ui
+       :custom-face
+       (lsp-ui-doc-background ((t (:background nil))))
+       (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+       :init (setq lsp-ui-doc-enable t
+		   lsp-ui-doc-header t
+		   lsp-ui-doc-include-signature t
+		   lsp-ui-doc-position 'top
+		   lsp-ui-doc-use-webkit t
+		   lsp-ui-doc-border (face-foreground 'default)
+
+		   lsp-ui-sideline-enable nil
+		   lsp-ui-sideline-ignore-duplicate t)
+       :config
+       ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+       ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+       (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+	 (setq mode-line-format nil)))
+
+     (use-package company-lsp 
+       :ensure t
+       :commands company-lsp
+       :config 
+       (push 'company-lsp company-backends)
+       (setq company-transformers nil
+	     company-lsp-async t
+	     company-lsp-cache-candidates nil))
+
+>>>>>>> d836a3ebd1be08e6173f13a3301013b8c3b3e267
    #+END_SRC
 
 ** ccls
@@ -662,24 +742,22 @@ function is used as advice for `widen'."
 			projectile-project-root-files-top-down-recurring))
        :hook ((c-mode c++-mode objc-mode) .
 	      (lambda () (require 'ccls) (lsp))))
-   #+END_SRC
 
-** company
-   #+BEGIN_SRC emacs-lisp
-     (use-package company
-       :diminish ""
-       :ensure t
-       :config
-       (setq company-idle-delay 0.3)
-       (setq company-minimum-prefix-length 2)
-       (global-company-mode t))
+     (add-hook 'c++-mode
+	       (lambda ()
+	       (setq company-backends '(company-lsp))))
 
+<<<<<<< HEAD
      (with-eval-after-load 'company
        (define-key company-active-map (kbd "M-n") nil)
        (define-key company-active-map (kbd "M-p") nil)
        (define-key company-active-map (kbd "H-i") 'company-select-previous)
        (define-key company-active-map (kbd "C-k") 'company-select-next))
+=======
+		 
+>>>>>>> d836a3ebd1be08e6173f13a3301013b8c3b3e267
    #+END_SRC
+
 * keybindings
   #+BEGIN_SRC emacs-lisp
 
@@ -778,6 +856,7 @@ function is used as advice for `widen'."
       "my-keys-minor-mode keymap.")
 
     (define-minor-mode my-keys-minor-mode
+      "my-keys-minor-mode keymap"
       :init-value t
       :lighter " my-keys")
 
