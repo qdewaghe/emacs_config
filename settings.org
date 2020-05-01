@@ -222,10 +222,10 @@
   #+END_SRC
 ** flycheck
   #+BEGIN_SRC emacs-lisp
-    ;;(use-package flycheck
-    ;;  :ensure t
-    ;;  :init 
-    ;;  (add-hook 'c++-mode-hook #'flycheck-mode))
+    (use-package flycheck
+      :ensure t
+      :init 
+      (add-hook 'c++-mode-hook #'flycheck-mode))
   #+END_SRC
 ** dashboard
   #+BEGIN_SRC emacs-lisp
@@ -613,36 +613,37 @@ function is used as advice for `widen'."
 * language server
 ** lsp
    #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode 
-      :ensure t
-      :init
-      :commands lsp
-      :hook (prog-mode . lsp))
+     (use-package lsp-mode 
+	   :ensure t
+	   :init
+	   :commands lsp
+	   :hook (prog-mode . lsp))
 
-(use-package lsp-ui :commands lsp-ui-mode)
-    (use-package lsp-ui
-      :custom-face
-      (lsp-ui-doc-background ((t (:background nil))))
-      (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-      :init (setq lsp-ui-doc-enable t
-		  lsp-ui-doc-header t
-		  lsp-ui-doc-include-signature t
-		  lsp-ui-doc-position 'top
-		  lsp-ui-doc-use-webkit t
-		  lsp-ui-doc-border (face-foreground 'default)
+     (setq lsp-prefer-capf t)
 
-		  lsp-ui-sideline-enable nil
-		  lsp-ui-sideline-ignore-duplicate t)
-      :config
-      ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-      ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-      (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-	(setq mode-line-format nil)))
+     (use-package lsp-ui :commands lsp-ui-mode)
+	 (use-package lsp-ui
+	   :custom-face
+	   (lsp-ui-doc-background ((t (:background nil))))
+	   (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+	   :init (setq lsp-ui-doc-enable t
+		       lsp-ui-doc-header t
+		       lsp-ui-doc-include-signature t
+		       lsp-ui-doc-position 'top
+		       lsp-ui-doc-use-webkit t
+		       lsp-ui-doc-border (face-foreground 'default)
+		       lsp-ui-doc-delay 2
 
-    (use-package company-lsp 
-      :ensure t
-      :commands company-lsp
-      :config (push 'company-lsp company-backends))
+		       lsp-ui-sideline-show-diagnostics t
+		       lsp-ui-sideline-ignore-duplicate t
+		       lsp-ui-sideline-show-hover t 
+		       lsp-ui-sideline-show-code-actions t
+		       lsp-ui-sideline-update-mode t)
+	   :config
+	   ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+	   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+	   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+	     (setq mode-line-format nil)))
    #+END_SRC
 
 ** ccls
@@ -678,8 +679,6 @@ function is used as advice for `widen'."
        (define-key company-active-map (kbd "M-p") nil)
        (define-key company-active-map (kbd "H-i") 'company-select-previous)
        (define-key company-active-map (kbd "C-k") 'company-select-next))
-   
-       (setq company-transformers nil company-lsp-async t company-lsp-cache-candidates nil)
    #+END_SRC
 * keybindings
   #+BEGIN_SRC emacs-lisp
