@@ -593,6 +593,7 @@ function is used as advice for `widen'."
 #+END_SRC
 
 * languages
+** C++
   #+BEGIN_SRC emacs-lisp
     (use-package clang-format
       :ensure t
@@ -625,7 +626,6 @@ function is used as advice for `widen'."
 			   (load-file (locate-file "my-lua.el" load-path)))))
 
   #+END_SRC
-* language server
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
@@ -642,88 +642,62 @@ function is used as advice for `widen'."
        (setq company-minimum-prefix-length 2)
        (global-company-mode t))
 
-     (with-eval-after-load 'company
-       (define-key company-active-map (kbd "M-n") nil)
-       (define-key company-active-map (kbd "M-p") nil)
-       (define-key company-active-map (kbd "H-i") 'company-select-previous)
-       (define-key company-active-map (kbd "C-k") 'company-select-next))
+     (setq company-backends
+	   '((company-files          ; files & directory
+	      company-keywords       ; keywords
+	      company-capf
+	      company-yasnippet
+	      )
+	     (company-abbrev company-dabbrev)
+	     ))
+
+      (with-eval-after-load 'company
+	(define-key company-active-map (kbd "M-n") nil)
+	(define-key company-active-map (kbd "M-p") nil)
+	(define-key company-active-map (kbd "H-i") 'company-select-previous)
+	(define-key company-active-map (kbd "C-k") 'company-select-next))
+ 
    #+END_SRC
 ** lsp
    #+BEGIN_SRC emacs-lisp
-     (use-package lsp-mode 
-<<<<<<< HEAD
-	   :ensure t
-	   :init
-	   :commands lsp
-	   :hook (prog-mode . lsp))
-
-     (setq lsp-prefer-capf t)
-
-     (use-package lsp-ui :commands lsp-ui-mode)
-	 (use-package lsp-ui
-	   :custom-face
-	   (lsp-ui-doc-background ((t (:background nil))))
-	   (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-	   :init (setq lsp-ui-doc-enable t
-		       lsp-ui-doc-header t
-		       lsp-ui-doc-include-signature t
-		       lsp-ui-doc-position 'top
-		       lsp-ui-doc-use-webkit t
-		       lsp-ui-doc-border (face-foreground 'default)
-		       lsp-ui-doc-delay 2
-
-		       lsp-ui-sideline-show-diagnostics t
-		       lsp-ui-sideline-ignore-duplicate t
-		       lsp-ui-sideline-show-hover t 
-		       lsp-ui-sideline-show-code-actions t
-		       lsp-ui-sideline-update-mode t)
-	   :config
-	   ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-	   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-	   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-	     (setq mode-line-format nil)))
-=======
+     (use-package lsp-mode
        :ensure t
        :init
+       (setq lsp-prefer-capf t)
+       (setq lsp-idle-delay 0.500)
        :commands lsp
-       :config (require 'lsp-clients)
        :hook (prog-mode . lsp))
 
-     (setq gc-cons-threshold 100000000)
-     (setq read-process-output-max (* 1024 1024)) ;; 1mb
-     (setq lsp-prefer-capf t)
-     (setq lsp-idle-delay 0.500)
 
-     (use-package lsp-ui :commands lsp-ui-mode)
-     (use-package lsp-ui
-       :custom-face
-       (lsp-ui-doc-background ((t (:background nil))))
-       (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-       :init (setq lsp-ui-doc-enable t
-		   lsp-ui-doc-header t
-		   lsp-ui-doc-include-signature t
-		   lsp-ui-doc-position 'top
-		   lsp-ui-doc-use-webkit t
-		   lsp-ui-doc-border (face-foreground 'default)
+       (use-package lsp-ui
+	 :ensure t 
+	 :commands lsp-ui-mode
+	 :custom-face
+	 (lsp-ui-doc-background ((t (:background nil))))
+	 (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+	 :init (setq lsp-ui-doc-enable t
+		     lsp-ui-doc-header t
+		     lsp-ui-doc-include-signature t
+		     lsp-ui-doc-position 'top
+		     lsp-ui-doc-use-webkit t
+		     lsp-ui-doc-border (face-foreground 'default)
+		     lsp-ui-doc-delay 2
 
-		   lsp-ui-sideline-enable nil
-		   lsp-ui-sideline-ignore-duplicate t)
-       :config
-       ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-       ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-       (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-	 (setq mode-line-format nil)))
+		     lsp-ui-sideline-show-diagnostics t
+		     lsp-ui-sideline-ignore-duplicate t
+		     lsp-ui-sideline-show-hover t 
+		     lsp-ui-sideline-show-code-actions t
+		     lsp-ui-sideline-update-mode t)
+	 :config
+	 ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+	 ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+	 (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+	   (setq mode-line-format nil)))
 
-     (use-package company-lsp 
-       :ensure t
-       :commands company-lsp
-       :config 
-       (push 'company-lsp company-backends)
-       (setq company-transformers nil
-	     company-lsp-async t
-	     company-lsp-cache-candidates nil))
+       (setq gc-cons-threshold 100000000)
+       (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
->>>>>>> d836a3ebd1be08e6173f13a3301013b8c3b3e267
+
    #+END_SRC
 
 ** ccls
@@ -742,20 +716,6 @@ function is used as advice for `widen'."
 			projectile-project-root-files-top-down-recurring))
        :hook ((c-mode c++-mode objc-mode) .
 	      (lambda () (require 'ccls) (lsp))))
-
-     (add-hook 'c++-mode
-	       (lambda ()
-	       (setq company-backends '(company-lsp))))
-
-<<<<<<< HEAD
-     (with-eval-after-load 'company
-       (define-key company-active-map (kbd "M-n") nil)
-       (define-key company-active-map (kbd "M-p") nil)
-       (define-key company-active-map (kbd "H-i") 'company-select-previous)
-       (define-key company-active-map (kbd "C-k") 'company-select-next))
-=======
-		 
->>>>>>> d836a3ebd1be08e6173f13a3301013b8c3b3e267
    #+END_SRC
 
 * keybindings
