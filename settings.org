@@ -1,7 +1,6 @@
 * repositories
 #+BEGIN_SRC emacs-lisp
   (require 'package)
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")))
@@ -665,6 +664,7 @@ function is used as advice for `widen'."
        :init
        (setq lsp-prefer-capf t)
        (setq lsp-idle-delay 0.500)
+       (setq lsp-auto-guess-root nil)
        :commands lsp
        :hook (prog-mode . lsp))
 
@@ -702,20 +702,21 @@ function is used as advice for `widen'."
 
 ** ccls
    #+BEGIN_SRC emacs-lisp
-     (use-package ccls
-       :after projectile
-       :init
-       (setq ccls-executable "~/code/ccls/Release/ccls")
-       (setq ccls-sem-highlight-method 'font-lock)
-       (with-eval-after-load 'projectile
-	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache/"))
-       (setq lsp-prefer-flymake nil)
-       (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-       :custom (projectile-project-root-files-top-down-recurring
-		(append '("compile_commands.json" ".ccls")
-			projectile-project-root-files-top-down-recurring))
-       :hook ((c-mode c++-mode objc-mode) .
-	      (lambda () (require 'ccls) (lsp))))
+	  (use-package ccls
+	    :ensure t
+	    :after projectile
+	    :init
+	    (setq ccls-executable "~/code/ccls/Release/ccls")
+	    (setq ccls-sem-highlight-method 'font-lock)
+	    (with-eval-after-load 'projectile
+	      (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
+	    (setq lsp-prefer-flymake nil)
+	    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+	    :custom (projectile-project-root-files-bottom-up
+		     (append '(".ccls-root")
+			    projectile-project-root-files-bottom-up))
+	    :hook ((c-mode c++-mode objc-mode) .
+		   (lambda () (require 'ccls) (lsp))))
    #+END_SRC
 
 * keybindings
