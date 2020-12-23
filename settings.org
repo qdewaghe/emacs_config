@@ -223,6 +223,13 @@
       :ensure t
       :init 
       (add-hook 'c++-mode-hook #'flycheck-mode))
+
+    (use-package flycheck-clang-tidy
+      :after flycheck
+      :init
+      (setq flycheck-clang-tidy-executable "/usr/local/bin/clang-tidy")
+      :hook
+      (flycheck-mode . flycheck-clang-tidy-setup))
   #+END_SRC
 ** dashboard
   #+BEGIN_SRC emacs-lisp
@@ -258,15 +265,15 @@
     #+END_SRC
 ** spaceline
     #+BEGIN_SRC emacs-lisp
-      (use-package spaceline
-	:ensure t
-	:init
-	(setq powerline-default-separator 'slant)
-	:config
-	(spaceline-emacs-theme)
-	(spaceline-toggle-minor-modes-off)
-	(spaceline-toggle-buffer-size-off)
-	(spaceline-toggle-evil-state-on))
+      ;(use-package spaceline
+;	:ensure t
+;	:init
+;	(setq powerline-default-separator 'slant)
+;	:config
+;	(spaceline-emacs-theme)
+;	(spaceline-toggle-minor-modes-off)
+;	(spaceline-toggle-buffer-size-off)
+;	(spaceline-toggle-evil-state-on))
     #+END_SRC
 ** lua
 #+BEGIN_SRC emacs-lisp
@@ -300,6 +307,7 @@
 #+END_SRC
 
 * ido counsel ivy
+
 #+BEGIN_SRC emacs-lisp
   (setq indo-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -581,7 +589,6 @@ function is used as advice for `widen'."
 (provide 'narrow-reindent)
    #+END_SRC
 * Cmake
-
 #+BEGIN_SRC emacs-lisp
   (use-package cmake-mode
     :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
@@ -590,7 +597,6 @@ function is used as advice for `widen'."
     :after (cmake-mode)
     :hook (cmake-mode . cmake-font-lock-activate))
 #+END_SRC
-
 * languages
 ** C++
   #+BEGIN_SRC emacs-lisp
@@ -702,126 +708,155 @@ function is used as advice for `widen'."
 
 ** ccls
    #+BEGIN_SRC emacs-lisp
-	  (use-package ccls
-	    :ensure t
-	    :after projectile
-	    :init
-	    (setq ccls-executable "~/code/ccls/Release/ccls")
-	    (setq ccls-sem-highlight-method 'font-lock)
-	    (with-eval-after-load 'projectile
-	      (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
-	    (setq lsp-prefer-flymake nil)
-	    (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-	    :custom (projectile-project-root-files-bottom-up
-		     (append '(".ccls-root")
-			    projectile-project-root-files-bottom-up))
-	    :hook ((c-mode c++-mode objc-mode) .
-		   (lambda () (require 'ccls) (lsp))))
+     (use-package ccls
+       :ensure t
+       :after projectile
+       :init
+       (setq ccls-executable "~/code/ccls/Release/ccls")
+       (setq ccls-args '("--log-file=/tmp/ccls.log")) 
+       (setq ccls-sem-highlight-method 'font-lock)
+       (with-eval-after-load 'projectile
+	 (add-to-list 'projectile-globally-ignored-directories ".ccls-cache"))
+       (setq lsp-prefer-flymake nil)
+       (setq-default flycheck-disabled-checkers '(c/c++-cppcheck c/c++-gcc))
+       :custom (projectile-project-root-files-bottom-up
+		(append '(".ccls-root")
+			projectile-project-root-files-bottom-up))
+       :hook ((c-mode c++-mode objc-mode) .
+	      (lambda () (require 'ccls) (lsp))))
+
+     (defun ccls/callee () (interactive) (lsp-ui-peek-find-custom "$ccls/call" '(:callee t)))
+     (defun ccls/caller () (interactive) (lsp-ui-peek-find-custom "$ccls/call"))
+     (defun ccls/vars (kind) (lsp-ui-peek-find-custom "$ccls/vars" `(:kind ,kind)))
+     (defun ccls/base (levels) (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels)))
+     (defun ccls/derived (levels) (lsp-ui-peek-find-custom "$ccls/inheritance" `(:levels ,levels :derived t)))
+     (defun ccls/member (kind) (interactive) (lsp-ui-peek-find-custom "$ccls/member" `(:kind ,kind)))
+
+     ;; References w/ Role::Role
+     (defun ccls/references-read () (interactive)
+	    (lsp-ui-peek-find-custom "textDocument/references"
+				     (plist-put (lsp--text-document-position-params) :role 8)))
+
+     ;; References w/ Role::Write
+     (defun ccls/references-write ()
+       (interactive)
+       (lsp-ui-peek-find-custom "textDocument/references"
+				(plist-put (lsp--text-document-position-params) :role 16)))
+
+     ;; References w/ Role::Dynamic bit (macro expansions)
+     (defun ccls/references-macro () (interactive)
+	    (lsp-ui-peek-find-custom "textDocument/references"
+				     (plist-put (lsp--text-document-position-params) :role 64)))
+
+     ;; References w/o Role::Call bit (e.g. where functions are taken addresses)
+     (defun ccls/references-not-call () (interactive)
+	    (lsp-ui-peek-find-custom "textDocument/references"
+				     (plist-put (lsp--text-document-position-params) :excludeRole 32)))
    #+END_SRC
 
 * keybindings
   #+BEGIN_SRC emacs-lisp
 
-  (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
+    (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
 
-    (defvar my-keys-minor-mode-map
-      (let ((map (make-sparse-keymap)))
-	(define-key map (kbd "C-z") 'undo)
-	(define-key map (kbd "C-s") 'save-buffer)
-	(define-key map (kbd "C-c C-f") 'counsel-find-file)
-	(define-key map (kbd "C-c r j") 'jump-to-register)
-	(define-key map (kbd "C-v") (kbd "C-y"))
-	(define-key map (kbd "C-c l") 'universal-argument)
-	(define-key map (kbd "C-c C-;") 'clang-format-buffer)
+      (defvar my-keys-minor-mode-map
+	(let ((map (make-sparse-keymap)))
+	  (define-key map (kbd "C-z") 'undo)
+	  (define-key map (kbd "C-s") 'save-buffer)
+	  (define-key map (kbd "C-c C-f") 'counsel-find-file)
+	  (define-key map (kbd "C-c r j") 'jump-to-register)
+	  (define-key map (kbd "C-v") (kbd "C-y"))
+	  (define-key map (kbd "C-c l") 'universal-argument)
+	  (define-key map (kbd "C-c C-;") 'clang-format-buffer)
 
-	(define-key map (kbd "C-c n") 'org-toggle-latex-fragement)
+	  (define-key map (kbd "C-c n") 'org-toggle-latex-fragement)
 
-	(define-key map (kbd "C-p") 'recenter-top-bottom)
-	(define-key map (kbd "<C-return>") 'lsp-find-definition)
+	  (define-key map (kbd "C-p") 'recenter-top-bottom)
+	  (define-key map (kbd "<C-return>") 'lsp-find-definition)
 
-	(define-key map (kbd "C-c l") 'recenter)
-	(define-key map (kbd "C-`") (insert "`"))
+	  (define-key map (kbd "C-c l") 'recenter)
+	  (define-key map (kbd "C-`") (insert "`"))
 
-	;;Tab = C-i thing
-	(define-key input-decode-map (kbd "C-i") (kbd "H-i"))
-	(define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
+	  ;;Tab = C-i thing
+	  (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
+	  (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
 
-	;;window with two versions so it works even if I press the number too fast
-	(define-key map (kbd "C-c 1") 'delete-other-windows)
-	(define-key map (kbd "C-c C-1") 'delete-other-windows)
+	  ;;window with two versions so it works even if I press the number too fast
+	  (define-key map (kbd "C-c 1") 'delete-other-windows)
+	  (define-key map (kbd "C-c C-1") 'delete-other-windows)
 
-	(define-key map (kbd "C-c 0") 'delete-window)
-	(define-key map (kbd "C-c C-0") 'delete-window)
+	  (define-key map (kbd "C-c 0") 'delete-window)
+	  (define-key map (kbd "C-c C-0") 'delete-window)
 
-	;;switching frame and stuff
-	(define-key map (kbd "C-c o") 'switch-window)
-	(define-key map (kbd "C-c C-o") 'switch-window)
-	(define-key map (kbd "C-c a") 'ff-find-other-file)
-	(define-key map (kbd "C-c e") 'other-frame)
+	  ;;switching frame and stuff
+	  (define-key map (kbd "C-c o") 'switch-window)
+	  (define-key map (kbd "C-c C-o") 'switch-window)
+	  (define-key map (kbd "C-c a") 'ff-find-other-file)
+	  (define-key map (kbd "C-c e") 'other-frame)
 
-	;;balancing horizontally
-	(define-key map (kbd "C-,") 'enlarge-window-horizontally)
-	(define-key map (kbd "C-.") 'shrink-window-horizontally)
-	(define-key map (kbd "C-/") 'balance-windows)
+	  ;;balancing horizontally
+	  (define-key map (kbd "C-,") 'enlarge-window-horizontally)
+	  (define-key map (kbd "C-.") 'shrink-window-horizontally)
+	  (define-key map (kbd "C-/") 'balance-windows)
 
-	
-	;;frames
-	(define-key map (kbd "C-c 4 1") 'delete-other-frames)
-	(define-key map (kbd "C-c 4 0") 'delete-frame)
-	(define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
-	(define-key map (kbd "C-c 4 2") 'find-file-other-frame)
-	(define-key map (kbd "C-c 4 3") 'find-file-other-frame)
 
-	;;switch buffer
-	(define-key map (kbd "C-c b") 'ivy-switch-buffer)
-	(define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
+	  ;;frames
+	  (define-key map (kbd "C-c 4 1") 'delete-other-frames)
+	  (define-key map (kbd "C-c 4 0") 'delete-frame)
+	  (define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
+	  (define-key map (kbd "C-c 4 2") 'find-file-other-frame)
+	  (define-key map (kbd "C-c 4 3") 'find-file-other-frame)
 
-	;;copy/cut paste	
-	(define-key map (kbd "C-c C-y") 'kill-ring-save)
-	(define-key map (kbd "C-c f") 'kill-region)
+	  ;;switch buffer
+	  (define-key map (kbd "C-c b") 'ivy-switch-buffer)
+	  (define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
 
-	;;mark
-	(define-key map (kbd "<C-tab>") 'set-mark-command)
+	  ;;copy/cut paste	
+	  (define-key map (kbd "C-c C-y") 'kill-ring-save)
+	  (define-key map (kbd "C-c f") 'kill-region)
 
-	;;navigation by one
-	(define-key map (kbd "H-i") 'previous-line)
-	(define-key map (kbd "C-k") 'next-line)
-	(define-key map (kbd "C-j") 'backward-char)
-	(define-key map (kbd "C-l") 'forward-char)
+	  ;;mark
+	  (define-key map (kbd "<C-tab>") 'set-mark-command)
 
-	;;navigation by one element
-	(define-key map (kbd "M-i") 'backward-sentence)	
-	(define-key map (kbd "M-k") 'forward-sentence)
-	(define-key map (kbd "M-j") 'backward-word)
-	(define-key map (kbd "M-l") 'forward-word)
+	  ;;navigation by one
+	  (define-key map (kbd "H-i") 'previous-line)
+	  (define-key map (kbd "C-k") 'next-line)
+	  (define-key map (kbd "C-j") 'backward-char)
+	  (define-key map (kbd "C-l") 'forward-char)
 
-	;;move to end of *
-	(define-key map (kbd "C-u") 'move-beginning-of-line)
-	(define-key map (kbd "C-o") 'move-end-of-line)
-	(define-key map (kbd "M-u") 'beginning-of-buffer)
-	(define-key map (kbd "M-o") 'end-of-buffer)
+	  ;;navigation by one element
+	  (define-key map (kbd "M-i") 'backward-sentence)	
+	  (define-key map (kbd "M-k") 'forward-sentence)
+	  (define-key map (kbd "M-j") 'backward-word)
+	  (define-key map (kbd "M-l") 'forward-word)
 
-	;;expand region
-	(define-key map (kbd "C-e") 'er/expand-region)
-	(define-key map (kbd "C-r") 'er/contract-region)
+	  ;;move to end of *
+	  (define-key map (kbd "C-u") 'move-beginning-of-line)
+	  (define-key map (kbd "C-o") 'move-end-of-line)
+	  (define-key map (kbd "M-u") 'beginning-of-buffer)
+	  (define-key map (kbd "M-o") 'end-of-buffer)
 
-	;;deleting stuff
-	;;(define-key map (kbd "M-<DEL>") 'kill-line)
+	  ;;expand region
+	  (define-key map (kbd "C-e") 'er/expand-region)
+	  (define-key map (kbd "C-r") 'er/contract-region)
 
-	(define-key map (kbd "C-c 2") 'split-and-follow-horizontally)
-	(define-key map (kbd "C-c C-2") 'split-and-follow-horizontally)
+	  ;;deleting stuff
+	  ;;(define-key map (kbd "M-<DEL>") 'kill-line)
 
-	;;main keys
-	(define-key map (kbd "`") 'execute-extended-command)
-	map)
-      "my-keys-minor-mode keymap.")
+	  (define-key map (kbd "C-c 2") 'split-and-follow-horizontally)
+	  (define-key map (kbd "C-c C-2") 'split-and-follow-horizontally)
 
-    (define-minor-mode my-keys-minor-mode
-      "my-keys-minor-mode keymap"
-      :init-value t
-      :lighter " my-keys")
+	  ;;main keys
+	  (define-key map (kbd "`") 'execute-extended-command)
+	  map)
+	"my-keys-minor-mode keymap.")
 
-    (my-keys-minor-mode 1)
+      (define-minor-mode my-keys-minor-mode
+	"my-keys-minor-mode keymap"
+	:init-value t
+	:lighter " my-keys")
+
+      (my-keys-minor-mode 1)
 
  #+END_SRC
 
