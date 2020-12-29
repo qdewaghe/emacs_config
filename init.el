@@ -9,6 +9,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("43c808b039893c885bdeec885b4f7572141bd9392da7f0bd8d8346e02b2ec8da" default))
+ '(org-agenda-files '("~/Documents/eng.org"))
  '(package-selected-packages
    '(flycheck dracula-theme clang-format yasnippet which-key use-package try switch-window spaceline rainbow-delimiters org-bullets modern-cpp-font-lock magit-popup magit lua-mode lsp-ui hungry-delete htmlize expand-region eglot doom-themes diminish dashboard cquery counsel company-lsp ccls beacon avy))
  '(projectile-project-root-files-top-down-recurring '("compile_commands.json" ".ccls" ".svn" "CVS" "Makefile")))

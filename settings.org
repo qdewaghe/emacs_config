@@ -32,7 +32,7 @@
 ** terminal
    #+BEGIN_SRC emacs-lisp
      (defalias 'yes-or-no-p 'y-or-n-p)
-     (defvar my-term-shell "/bin/bash")
+     (defvar my-term-shell "fish")
 
      (defun eshell/clear ()
        (interactive)
@@ -61,7 +61,7 @@
   #+END_SRC
 ** default zoom 
    #+BEGIN_SRC emacs-lisp
-   (set-face-attribute 'default nil :height 135)
+   (set-face-attribute 'default nil :height 120)
    #+END_SRC
 ** camelCaseNavigation
    #+BEGIN_SRC emacs-lisp
@@ -87,7 +87,7 @@
     #+END_SRC
 ** visual line mode
 #+BEGIN_SRC emacs-lisp
-(global-visual-line-mode t)
+;;(global-visual-line-mode t)
 #+END_SRC
 ** other
    #+BEGIN_SRC emacs-lisp
@@ -302,8 +302,7 @@
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
-    :config
-    (load-theme 'doom-vibrant t))
+    :config (load-theme 'doom-dracula t))
 #+END_SRC
 
 * ido counsel ivy
@@ -345,7 +344,7 @@
 			       (org-bullets-mode 1))))
 
   (setq org-hide-emphasis-markers t)
-  (font-lock-add-keywords 'org-mode
+ (font-lock-add-keywords 'org-mode
 			  '(("^ +\\([-*]\\) "
 			     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
    #+END_SRC
@@ -625,12 +624,13 @@ function is used as advice for `widen'."
 
     (add-hook 'c-mode-hook (lambda () (clang-format-save-hook-for-this-buffer))
 	      (add-hook 'c++-mode-hook (lambda () (clang-format-save-hook-for-this-buffer))))
-
+  #+END_SRC
+** lua
+#+BEGIN_SRC emacs-lisp
     (add-hook 'lua-mode-hook 
 	      (lambda () (unless (fboundp 'lua-calculate-indentation-right-shift-next)
 			   (load-file (locate-file "my-lua.el" load-path)))))
-
-  #+END_SRC
+#+END_SRC
 ** company
    #+BEGIN_SRC emacs-lisp
      (use-package company
@@ -759,6 +759,7 @@ function is used as advice for `widen'."
 
     (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
 
+
       (defvar my-keys-minor-mode-map
 	(let ((map (make-sparse-keymap)))
 	  (define-key map (kbd "C-z") 'undo)
@@ -775,18 +776,10 @@ function is used as advice for `widen'."
 	  (define-key map (kbd "<C-return>") 'lsp-find-definition)
 
 	  (define-key map (kbd "C-c l") 'recenter)
-	  (define-key map (kbd "C-`") (insert "`"))
 
 	  ;;Tab = C-i thing
 	  (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 	  (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
-
-	  ;;window with two versions so it works even if I press the number too fast
-	  (define-key map (kbd "C-c 1") 'delete-other-windows)
-	  (define-key map (kbd "C-c C-1") 'delete-other-windows)
-
-	  (define-key map (kbd "C-c 0") 'delete-window)
-	  (define-key map (kbd "C-c C-0") 'delete-window)
 
 	  ;;switching frame and stuff
 	  (define-key map (kbd "C-c o") 'switch-window)
@@ -815,9 +808,6 @@ function is used as advice for `widen'."
 	  (define-key map (kbd "C-c C-y") 'kill-ring-save)
 	  (define-key map (kbd "C-c f") 'kill-region)
 
-	  ;;mark
-	  (define-key map (kbd "<C-tab>") 'set-mark-command)
-
 	  ;;navigation by one
 	  (define-key map (kbd "H-i") 'previous-line)
 	  (define-key map (kbd "C-k") 'next-line)
@@ -839,15 +829,6 @@ function is used as advice for `widen'."
 	  ;;expand region
 	  (define-key map (kbd "C-e") 'er/expand-region)
 	  (define-key map (kbd "C-r") 'er/contract-region)
-
-	  ;;deleting stuff
-	  ;;(define-key map (kbd "M-<DEL>") 'kill-line)
-
-	  (define-key map (kbd "C-c 2") 'split-and-follow-horizontally)
-	  (define-key map (kbd "C-c C-2") 'split-and-follow-horizontally)
-
-	  ;;main keys
-	  (define-key map (kbd "`") 'execute-extended-command)
 	  map)
 	"my-keys-minor-mode keymap.")
 
@@ -857,6 +838,28 @@ function is used as advice for `widen'."
 	:lighter " my-keys")
 
       (my-keys-minor-mode 1)
+
+      (use-package key-chord  
+	:ensure t
+	:config
+	(key-chord-mode 1)
+	(setq key-chord-two-keys-delay .05
+	      key-chord-one-key-delay .15)
+	;;Window management
+	(key-chord-define-global " 0" 'delete-window)
+	(key-chord-define-global " 1" 'delete-other-windows)
+	(key-chord-define-global " 2" 'split-and-follow-horizontally)
+	(key-chord-define-global " 3" 'split-and-follow-vertically)
+	;;command
+	(key-chord-define-global " c" 'execute-extended-command)
+	;; mark
+	(key-chord-define-global " m" 'set-mark-command)
+	(key-chord-define-global " b" 'ivy-switch-buffer)
+	;;misc
+	(key-chord-define-global "FF" 'swiper)
+	(key-chord-define-global " f" 'counsel-find-file)
+	(key-chord-define-global " q"  ctl-x-map)
+	(key-chord-define-global " j" mode-specific-map))
 
  #+END_SRC
 
