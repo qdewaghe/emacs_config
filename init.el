@@ -11,7 +11,7 @@
    '("43c808b039893c885bdeec885b4f7572141bd9392da7f0bd8d8346e02b2ec8da" default))
  '(org-agenda-files '("~/Documents/eng.org"))
  '(package-selected-packages
-   '(treemacs-projectile treemacs flycheck dracula-theme clang-format yasnippet which-key use-package try switch-window spaceline rainbow-delimiters org-bullets modern-cpp-font-lock magit-popup magit lua-mode lsp-ui hungry-delete htmlize expand-region eglot doom-themes diminish dashboard cquery counsel company-lsp ccls beacon avy))
+   '(lsp-pyright treemacs-projectile treemacs flycheck dracula-theme clang-format yasnippet which-key use-package try switch-window spaceline rainbow-delimiters org-bullets modern-cpp-font-lock magit-popup magit lua-mode lsp-ui hungry-delete htmlize expand-region eglot doom-themes diminish dashboard cquery counsel company-lsp ccls beacon avy))
  '(projectile-project-root-files-top-down-recurring '("compile_commands.json" ".ccls" ".svn" "CVS" "Makefile"))
  '(warning-suppress-log-types '((comp))))
 (custom-set-faces

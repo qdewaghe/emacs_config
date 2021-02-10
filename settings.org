@@ -722,7 +722,7 @@ function is used as advice for `widen'."
        (setq company-lsp-enable-recompletion t)
        (setq company-dabbrev-downcase 0)
        (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 0)
+       (setq company-minimum-prefix-length 1)
        (global-company-mode t))
 
      (setq company-backends
@@ -753,34 +753,37 @@ function is used as advice for `widen'."
        (setq lsp-disabled-clients '(clangd)))
 
 
-       (use-package lsp-ui
-	 :ensure t 
-	 :commands lsp-ui-mode
-	 :custom-face
-	 (lsp-ui-doc-background ((t (:background nil))))
-	 (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-	 :init (setq lsp-ui-doc-enable t
-		     lsp-ui-doc-header t
-		     lsp-ui-doc-include-signature t
-		     lsp-ui-doc-position 'top
-		     lsp-ui-doc-use-webkit t
-		     lsp-ui-doc-border (face-foreground 'default)
-		     lsp-ui-doc-delay 2
-		     lsp-ui-sideline-show-diagnostics t 
-		     lsp-ui-sideline-show-code-actions t
-		     lsp-ui-sideline-update-mode t))
+     (use-package lsp-ui
+       :ensure t 
+       :commands lsp-ui-mode
+       :custom-face
+       (lsp-ui-doc-background ((t (:background nil))))
+       (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+       :init (setq lsp-ui-doc-enable t
+		   lsp-ui-doc-header t
+		   lsp-ui-doc-include-signature t
+		   lsp-ui-doc-position 'top
+		   lsp-ui-doc-use-webkit t
+		   lsp-ui-doc-border (face-foreground 'default)
+		   lsp-ui-doc-delay 2
+		   lsp-ui-sideline-show-diagnostics t 
+		   lsp-ui-sideline-show-code-actions t
+		   lsp-ui-sideline-update-mode t))
 
-       (setq gc-cons-threshold 100000000)
-       (setq read-process-output-max (* 1024 1024)) ;; 1mb
+     (setq gc-cons-threshold 100000000)
+     (setq read-process-output-max (* 1024 1024)) ;; 1mb
 
+     (use-package lsp-pyright
+       :after lsp-mode
+       :custom
+       (lsp-pyright-auto-import-completions nil)
+       (lsp-pyright-typechecking-mode "off"))
 
    #+END_SRC
-
 * keybindings
   #+BEGIN_SRC emacs-lisp
 
     (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
-
 
       (defvar my-keys-minor-mode-map
 	(let ((map (make-sparse-keymap)))
@@ -809,18 +812,6 @@ function is used as advice for `widen'."
 	  (define-key map (kbd "C-c a") 'ff-find-other-file)
 	  (define-key map (kbd "C-c e") 'other-frame)
 
-	  ;;balancing horizontally
-	  (define-key map (kbd "C-,") 'enlarge-window-horizontally)
-	  (define-key map (kbd "C-.") 'shrink-window-horizontally)
-	  (define-key map (kbd "C-/") 'balance-windows)
-
-
-	  ;;frames
-	  (define-key map (kbd "C-c 4 1") 'delete-other-frames)
-	  (define-key map (kbd "C-c 4 0") 'delete-frame)
-	  (define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
-	  (define-key map (kbd "C-c 4 2") 'find-file-other-frame)
-	  (define-key map (kbd "C-c 4 3") 'find-file-other-frame)
 	  ;;switch buffer
 	  (define-key map (kbd "C-c b") 'ivy-switch-buffer)
 	  (define-key map (kbd "C-c C-b") 'ivy-switch-buffer)
@@ -850,6 +841,25 @@ function is used as advice for `widen'."
 	  ;;expand region
 	  (define-key map (kbd "C-e") 'er/expand-region)
 	  (define-key map (kbd "C-r") 'er/contract-region)
+
+	  (define-key map (kbd "C-b") 'avy-goto-char)
+
+	  ;;resizing windows
+	  (define-key map (kbd "C-c r h e") 'enlarge-window-horizontally)
+	  (define-key map (kbd "C-c r h s") 'shrink-window-horizontally)
+	  (define-key map (kbd "C-c r v e") 'enlarge-window)
+	  (define-key map (kbd "C-c r v s") 'shrink-window)
+	  (define-key map (kbd "C-c r b") 'balance-windows)
+
+	  (define-key map (kbd "C-c z +") 'text-scale-increase)
+	  (define-key map (kbd "C-c z -") 'text-scale-decrease)
+
+	  ;;frames
+	  (define-key map (kbd "C-c 4 1") 'delete-other-frames)
+	  (define-key map (kbd "C-c 4 0") 'delete-frame)
+	  (define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
+	  (define-key map (kbd "C-c 4 2") 'find-file-other-frame)
+	  (define-key map (kbd "C-c 4 3") 'find-file-other-frame)
 	  map)
 	"my-keys-minor-mode keymap.")
 
@@ -857,7 +867,7 @@ function is used as advice for `widen'."
 	"my-keys-minor-mode keymap"
 	:init-value t
 	:lighter " my-keys")
- 
+
       (my-keys-minor-mode 1)
 
       (use-package key-chord  
