@@ -39,18 +39,6 @@
        (let ((comint-buffer-maximum-size 0))
 	 (comint-truncate-buffer)))
     #+END_SRC
-** scrolling
-   #+BEGIN_SRC emacs-lisp
-     (setq
-      scroll-conservatively 1000                     
-      scroll-margin 4                                
-      scroll-step 1                                  
-      mouse-wheel-scroll-amount '(6 ((shift) . 1))   
-      mouse-wheel-progressive-speed nil
-      redisplay-dont-pause t
-      fast-but-imprecise-scrolling nil
-      jit-lock-defer-time 0)
-   #+END_SRC
 ** visual line mode
 #+BEGIN_SRC emacs-lisp
 (visual-line-mode 1)
@@ -161,9 +149,15 @@
       :ensure t
       :bind ("C-c p" . projectile-command-map)
       :config
-      (projectile-global-mode)
-      (setq projectile-enable-caching t)
-      (setq projectile-completion-system 'ivy))      
+      (setq projectile-completion-system 'ivy
+	    projectile-enable-caching    t
+	    projectile-globally-ignored-directories
+	    '(".git"
+	      "build"
+	      ".ccls-cache"
+	      ".cache"))
+      ;(append '(".a" ".class" "~") projectile-globally-ignored-files)
+      (projectile-global-mode))
 
   #+END_SRC
 ** search
@@ -205,10 +199,10 @@
   #+END_SRC
 ** rainbow
   #+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-   :ensure t
-   :config 
-   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+    (use-package rainbow-delimiters
+     :ensure t
+     :config 
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
   #+END_SRC
 ** hungry delete
   #+BEGIN_SRC emacs-lisp
@@ -287,7 +281,6 @@
 #+BEGIN_SRC emacs-lisp
   (use-package speed-type
     :ensure t)
-
 #+END_SRC
 ** auto-update
 #+BEGIN_SRC emacs-lisp
@@ -376,6 +369,20 @@
     :after treemacs projectile
     :ensure t)
 #+end_src
+** good-scroll
+   #+begin_src emacs-lisp
+     (use-package good-scroll
+       :ensure t
+       ;;:config (good-scroll-mode 1)
+       )
+   #+end_src
+
+** ripgrep
+   #+begin_src emacs-lisp
+     (use-package ripgrep
+       :ensure t)
+   #+end_src
+   
 * theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
@@ -495,6 +502,33 @@
       (kill-word 1))
     (global-set-key (kbd "C-c w w") 'kill-whole-word)
    #+END_SRC
+** beginning of line
+   #+begin_src emacs-lisp
+     (defun smarter-move-beginning-of-line (arg)
+       "Move point back to indentation of beginning of line.
+
+     Move point to the first non-whitespace character on this line.
+     If point is already there, move to the beginning of the line.
+     Effectively toggle between the first non-whitespace character and
+     the beginning of the line.
+
+     If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+     point reaches the beginning or end of the buffer, stop there."
+       (interactive "^p")
+       (setq arg (or arg 1))
+
+       ;; Move lines first
+       (when (/= arg 1)
+	 (let ((line-move-visual nil))
+	   (forward-line (1- arg))))
+
+       (let ((orig-point (point)))
+	 (back-to-indentation)
+	 (when (= orig-point (point))
+	   (move-beginning-of-line 1))))
+   #+end_src
+   
+   
 ** reload
    #+BEGIN_SRC emacs-lisp
     ;;f has to be lowercase btw
@@ -535,9 +569,6 @@
      (newline)
      (yank)
      (move-to-column col)))
-
- (global-set-key (kbd "C-c h") 'duplicate-line)
-
    #+END_SRC
 ** move line
    #+BEGIN_SRC emacs-lisp
@@ -675,6 +706,9 @@ function is used as advice for `widen'."
     :hook (cmake-mode . cmake-font-lock-activate))
 #+END_SRC
 * languages
+  #+begin_src emacs-lisp
+    (add-hook 'prog-mode-hook 'superword-mode)
+  #+end_src
 ** C++
   #+BEGIN_SRC emacs-lisp
     (use-package clang-format
@@ -780,31 +814,40 @@ function is used as advice for `widen'."
        (lsp-pyright-typechecking-mode "off"))
 
    #+END_SRC
+** rust
+   #+begin_src emacs-lisp
+(use-package toml-mode)
+
+(use-package rust-mode
+  :hook (rust-mode . lsp))
+
+;; Add keybindings for interacting with Cargo
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
+
+(use-package flycheck-rust
+  :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+   #+end_src
 * keybindings
   #+BEGIN_SRC emacs-lisp
-
     (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
-
       (defvar my-keys-minor-mode-map
 	(let ((map (make-sparse-keymap)))
 	  (define-key map (kbd "C-z") 'undo)
 	  (define-key map (kbd "C-s") 'save-buffer)
 	  (define-key map (kbd "C-c C-f") 'counsel-find-file)
 	  (define-key map (kbd "C-c r j") 'jump-to-register)
-	  (define-key map (kbd "C-v") (kbd "C-y"))
 	  (define-key map (kbd "C-c l") 'universal-argument)
-	  (define-key map (kbd "C-c C-;") 'clang-format-buffer)
-
-	  (define-key map (kbd "C-c n") 'org-toggle-latex-fragement)
 
 	  (define-key map (kbd "C-p") 'recenter-top-bottom)
 	  (define-key map (kbd "<C-return>") 'lsp-find-definition)
 
 	  (define-key map (kbd "C-c l") 'recenter)
 
-	  ;;Tab = C-i thing
+	  ;;Tab = C-i thing / <return> = C-m
 	  (define-key input-decode-map (kbd "C-i") (kbd "H-i"))
 	  (define-key input-decode-map (kbd "C-SPC") (kbd "C-c"))
+	  (define-key input-decode-map [?\C-m] [C-m])
 
 	  ;;switching frame and stuff
 	  (define-key map (kbd "C-c o") 'switch-window)
@@ -819,30 +862,27 @@ function is used as advice for `widen'."
 	  ;;copy/cut paste	
 	  (define-key map (kbd "C-c C-y") 'kill-ring-save)
 	  (define-key map (kbd "C-c f") 'kill-region)
+	  (define-key map (kbd "C-v") 'yank)
+	  (define-key map (kbd "C-c c") 'execute-extended-command)
 
-	  ;;navigation by one
+	  ;;navigation
 	  (define-key map (kbd "H-i") 'previous-line)
 	  (define-key map (kbd "C-k") 'next-line)
 	  (define-key map (kbd "C-j") 'backward-char)
 	  (define-key map (kbd "C-l") 'forward-char)
-
-	  ;;navigation by one element
-	  (define-key map (kbd "M-i") 'backward-sentence)	
-	  (define-key map (kbd "M-k") 'forward-sentence)
+	  (define-key map (kbd "M-i") 'backward-sexp)	
+	  (define-key map (kbd "M-k") 'forward-sexp)
 	  (define-key map (kbd "M-j") 'backward-word)
 	  (define-key map (kbd "M-l") 'forward-word)
-
-	  ;;move to end of *
-	  (define-key map (kbd "C-u") 'move-beginning-of-line)
-	  (define-key map (kbd "C-o") 'move-end-of-line)
+	  (define-key map (kbd "C-u") 'smarter-move-beginning-of-line)
 	  (define-key map (kbd "M-u") 'beginning-of-buffer)
+	  (define-key map (kbd "C-o") 'move-end-of-line)
 	  (define-key map (kbd "M-o") 'end-of-buffer)
+	  (define-key map (kbd "C-b") 'avy-goto-char)
 
 	  ;;expand region
 	  (define-key map (kbd "C-e") 'er/expand-region)
 	  (define-key map (kbd "C-r") 'er/contract-region)
-
-	  (define-key map (kbd "C-b") 'avy-goto-char)
 
 	  ;;resizing windows
 	  (define-key map (kbd "C-c r h e") 'enlarge-window-horizontally)
@@ -851,15 +891,10 @@ function is used as advice for `widen'."
 	  (define-key map (kbd "C-c r v s") 'shrink-window)
 	  (define-key map (kbd "C-c r b") 'balance-windows)
 
-	  (define-key map (kbd "C-c z +") 'text-scale-increase)
-	  (define-key map (kbd "C-c z -") 'text-scale-decrease)
-
-	  ;;frames
-	  (define-key map (kbd "C-c 4 1") 'delete-other-frames)
-	  (define-key map (kbd "C-c 4 0") 'delete-frame)
-	  (define-key map (kbd "C-c 4 u") 'projectile-find-file-other-frame)
-	  (define-key map (kbd "C-c 4 2") 'find-file-other-frame)
-	  (define-key map (kbd "C-c 4 3") 'find-file-other-frame)
+	  ;;resize text
+	  (define-key map (kbd "C-c z i") 'text-scale-increase)
+	  (define-key map (kbd "C-c z d") 'text-scale-decrease)
+	  (define-key map (kbd "<C-m>") 'set-mark-command)
 	  map)
 	"my-keys-minor-mode keymap.")
 
@@ -876,21 +911,10 @@ function is used as advice for `widen'."
 	(key-chord-mode 1)
 	(setq key-chord-two-keys-delay .05
 	      key-chord-one-key-delay .15)
-	;;Window management
 	(key-chord-define-global " 0" 'delete-window)
 	(key-chord-define-global " 1" 'delete-other-windows)
 	(key-chord-define-global " 2" 'split-and-follow-horizontally)
-	(key-chord-define-global " 3" 'split-and-follow-vertically)
-	;;command
-	(key-chord-define-global " c" 'execute-extended-command)
-	;; mark
-	(key-chord-define-global " m" 'set-mark-command)
-	(key-chord-define-global " b" 'ivy-switch-buffer)
-	;;misc
-	(key-chord-define-global "FF" 'swiper)
-	(key-chord-define-global " f" 'counsel-find-file)
-	(key-chord-define-global " q"  ctl-x-map)
-	(key-chord-define-global " j" mode-specific-map))
+	(key-chord-define-global " 3" 'split-and-follow-vertically))
 
  #+END_SRC
 
